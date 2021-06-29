@@ -1,7 +1,7 @@
 
 from abc import ABC
-from src.Solver import Solver
-from src.Creator import Creator
+from Solver import Solver
+from Creator import Creator
 
 
 class Simulator(ABC):
