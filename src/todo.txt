@@ -1,0 +1,8 @@
+1. Add abstract methods, class methods and static methods to UI, GUI, Terminal, Creator, Solver, Simulator, Renderer
+2. Add class constants for UI, GUI, Terminal, Creator, Solver, Simulator, Renderer (if relevant)
+3. Ensure inheritance and composition for all classes is correct and feasible
+4. If Solver should have a child instance of MazeSolver / GraphSolver or if composition is better
+5. Same thing for Creator with MazeCreator / GraphCreator
+6. Add typing returns for all class functions (-> int: / -> None:)
+7. Add types for all class function arguments
+8. Add types for all class attributes
