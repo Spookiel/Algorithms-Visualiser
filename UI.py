@@ -41,7 +41,15 @@ class Terminal(UI):
 
 
     def run(self) -> None:
-        raise NotImplementedError
+        self.display_menu()
 
 
+
+    def display_menu(self):
+        print("Menu:")
+        print("1. View sorting algorithm options")
+        print("2. View grid searching algorithm options")
+        print("3. View maze generation and searching options")
+        print("4. Quit")
+        print("-"*50)
 
