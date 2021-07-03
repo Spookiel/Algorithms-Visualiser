@@ -36,12 +36,29 @@ class GUI(UI):
 
 
 class Terminal(UI):
+    MENULEN = 4
     def __init__(self) -> None:
         super().__init__()
 
 
     def run(self) -> None:
         self.display_menu()
+        str_choice: str = "0"
+        while True:
+
+            str_choice = input(f"Enter choice (1-{Terminal.MENULEN}): ")
+            try:
+                int_choice: int = int(str_choice)
+            except ValueError:
+                print("Invalid input for choice, please try again")
+                continue #Back to start of loop
+
+            if int_choice < 1 or int_choice > self.MENULEN:
+                print("Choice is out of range, please try again")
+                continue
+
+            #Valid choice so process here
+
 
 
 
