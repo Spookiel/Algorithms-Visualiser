@@ -59,8 +59,20 @@ class Terminal(UI):
 
             #Valid choice so process here
 
+            if int_choice==1:
+                pass
+            elif int_choice==2:
+                pass
+            elif int_choice==3:
+                pass
+            elif int_choice==4:
+                pass
 
 
+
+
+    def process_sorting_choice(self):
+        pass
 
     def display_menu(self):
         print("Menu:")
