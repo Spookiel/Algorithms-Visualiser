@@ -44,6 +44,4 @@ class Terminal(UI):
         raise NotImplementedError
 
 
-t = Terminal()
-print(t.simulator)
 
