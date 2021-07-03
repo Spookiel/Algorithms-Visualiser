@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from Simulator import Simulator
 from Renderer import Renderer
 
-
+from typing import List
+import random
 
 class UI(ABC):
 
@@ -37,6 +38,9 @@ class GUI(UI):
 
 class Terminal(UI):
     MENULEN = 4
+    SMALL_SORT = 8
+    MED_SORT = 15
+    LARGE_SORT = 25
     def __init__(self) -> None:
         super().__init__()
 
@@ -60,7 +64,7 @@ class Terminal(UI):
             #Valid choice so process here
 
             if int_choice==1:
-                pass
+                self.process_sorting_choice()
             elif int_choice==2:
                 pass
             elif int_choice==3:
@@ -69,10 +73,18 @@ class Terminal(UI):
                 pass
 
 
+    def generate_array(self, upto:int ) -> List[int]:
+        nums = [i+1 for i in range(upto)]
 
+        random.shuffle(nums)
+
+        return nums
 
     def process_sorting_choice(self):
-        pass
+
+        to_sort = self.generate_array(Terminal.MED_SORT)
+        print(to_sort)
+
 
     def display_menu(self):
         print("Menu:")
