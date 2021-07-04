@@ -14,7 +14,7 @@ class Sorter:
     def __init__(self) -> None:
 
         self.MENU_LOOKUP = ["", self.display_type_menu, self.display_size_menu]
-
+        self._totalComparisons = 0
 
     def getValidChoice(self, upper: int, menuChoice: int = 0, lower: int = 1) -> int:
 
@@ -46,6 +46,7 @@ class Sorter:
         print("1) For Merge sort")
         print("2) For Bubble sort")
         print("3) For Quick sort")
+        print("-"*40)
 
         #print(f"Enter choice (1-{Sorter.NUMBER_SORTS})")
 
@@ -54,6 +55,7 @@ class Sorter:
         print("1) For Small array (8 elements)")
         print("2) For Medium array (15 elements)")
         print("3) For Large array (25 elements")
+        print("-"*40)
 
     def process_sorting_choice(self) -> None:
 
@@ -70,12 +72,20 @@ class Sorter:
 
         if typeSort==1:
             # Merge sort
+
+            self._totalComparisons = 0
             self.mergeSort(to_sort)
+
+            print(f"Completed with {colored(str(self._totalComparisons), 'green')} comparisons!")
+
+
         elif typeSort==2:
             # Bubble sort
+            self._totalComparisons = 0
             self.bubbleSort(to_sort)
         elif typeSort==3:
             # Quick sort
+            self._totalComparisons = 0
             self.quickSort(to_sort)
 
 
@@ -93,6 +103,7 @@ class Sorter:
             leftArr = self.mergeSort(leftArr, level+1)
         else:
             if len(leftArr)==2:
+                self._totalComparisons += 1
                 if leftArr[0] > leftArr[1]:
                     leftArr = leftArr[::-1]
         print(f"Left array {colored('sorted', 'green')} at level {level}", leftArr)
@@ -102,6 +113,7 @@ class Sorter:
             rightArr = self.mergeSort(rightArr, level+1)
         else:
             if len(rightArr)==2:
+                self._totalComparisons += 1
                 if rightArr[0] > rightArr[1]:
                     rightArr = rightArr[::-1]
 
@@ -116,6 +128,7 @@ class Sorter:
                 merged.append(leftArr.pop(0))
             else:
                 merged.append(rightArr.pop(0))
+            self._totalComparisons += 1
 
         merged.extend(leftArr)
         merged.extend(rightArr)
