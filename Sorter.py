@@ -1,6 +1,6 @@
 from typing import List
 import random
-
+from termcolor import colored # Allows coloured text in terminal
 
 class Sorter:
     SMALL_SORT = 8
@@ -86,18 +86,18 @@ class Sorter:
         leftArr = arr[:mid]
         rightArr = arr[mid:]
 
-        print(f"Sorting main array at level {level}", arr)
+        print(f"{colored('sorting', 'yellow')} main array at level {level}", arr)
 
-        print(f"Sorting left array at level {level}", leftArr)
+        print(f"{colored('sorting', 'red')} left array at level {level}", leftArr)
         if len(leftArr) > 2:
             leftArr = self.mergeSort(leftArr, level+1)
         else:
             if len(leftArr)==2:
                 if leftArr[0] > leftArr[1]:
                     leftArr = leftArr[::-1]
-        print(f"Left array sorted at level {level}", leftArr)
+        print(f"Left array {colored('sorted', 'green')} at level {level}", leftArr)
 
-        print(f"Sorting right array at level {level}", rightArr)
+        print(f"{colored('sorting', 'red')} right array at level {level}", rightArr)
         if len(rightArr) > 2:
             rightArr = self.mergeSort(rightArr, level+1)
         else:
@@ -105,7 +105,7 @@ class Sorter:
                 if rightArr[0] > rightArr[1]:
                     rightArr = rightArr[::-1]
 
-        print(f"Right array sorted at level {level}", rightArr)
+        print(f"Right array {colored('sorted', 'green')} at level {level}", rightArr)
 
 
         # Knowing that the two lists are sorted, we can run through the two arrays using separate pointers
@@ -120,7 +120,7 @@ class Sorter:
         merged.extend(leftArr)
         merged.extend(rightArr)
 
-        print(f"Merged array at level {level}", merged)
+        print(f"{colored('Merged', 'green')} array at level {level}", merged)
         return merged
 
 
