@@ -5,5 +5,8 @@
 5. Same thing for Creator with MazeCreator / GraphCreator
 
 
-6. Split sorting methods from Terminal class into separate sorting manager class with own file
+
 7. Update Software Object Design diagram to show new class including composition
+
+
+8. Add coloured terminal text to make steps and visualisations in the terminal clearer
