@@ -7,14 +7,15 @@ class Sorter:
     MED_SORT = 15
     LARGE_SORT = 25
     SORT_SIZES = [SMALL_SORT,MED_SORT,LARGE_SORT]
-    NUMBER_SORTS = 3
-    NUM_SIZES = 3
+    NUMBER_SORTS = 4
+    NUM_SIZES = 5
 
 
     def __init__(self) -> None:
 
         self.MENU_LOOKUP = ["", self.display_type_menu, self.display_size_menu]
-        self._totalComparisons = 0
+        self._totalComparisons: int = 0
+        self._outputStepsL: bool = True
 
     def getValidChoice(self, upper: int, menuChoice: int = 0, lower: int = 1) -> int:
 
@@ -46,47 +47,81 @@ class Sorter:
         print("1) For Merge sort")
         print("2) For Bubble sort")
         print("3) For Quick sort")
+        print("4) For Radix sort")
+        print("5) Back to main menu")
         print("-"*40)
 
-        #print(f"Enter choice (1-{Sorter.NUMBER_SORTS})")
+
 
     def display_size_menu(self):
         print("-"*20, "Size menu", "-"*20)
         print("1) For Small array (8 elements)")
         print("2) For Medium array (15 elements)")
         print("3) For Large array (25 elements")
+        print("4) For Extreme (1000 elements) - (Individual steps not shown, just comparisons made) ")
+        print("5) For load own input numbers from text file")
+        print("6) Back to previous menu")
         print("-"*40)
 
     def process_sorting_choice(self) -> None:
 
-        typeSort = self.getValidChoice(Sorter.NUMBER_SORTS, 1) # With menu 1 - Types menu
+        while True:
 
-        # 1 for merge, 2 -> bubble, 3 -> quick
+            # Plus one for back option
+            typeSort: int = self.getValidChoice(Sorter.NUMBER_SORTS+1, 1) # With menu 1 - Types menu
 
-        chosenSize = self.getValidChoice(3, 2) # Upper limit of 3 with menu 2 - Size menu
+            # 1 for merge, 2 -> bubble, 3 -> quick, 4 -> Radix, 5 -> Back
 
-        # 1 -> small, 2 -> medium, 3 -> large
+            if typeSort==5:
+                # Back to main menu immediately
+                return
 
-        to_sort: List[int] = self.generate_array(Sorter.SORT_SIZES[chosenSize-1])
+            # Plus one for back option
+            chosenSize: int = self.getValidChoice(Sorter.NUM_SIZES+1, 2) # Upper limit of 3 with menu 2 - Size menu
 
-
-        if typeSort==1:
-            # Merge sort
-
-            self._totalComparisons = 0
-            self.mergeSort(to_sort)
-
-            print(f"Completed with {colored(str(self._totalComparisons), 'green')} comparisons!")
+            # 1 -> small, 2 -> medium, 3 -> large, 4-> extreme, 5 -> Own input, 6-> Back
 
 
-        elif typeSort==2:
-            # Bubble sort
-            self._totalComparisons = 0
-            self.bubbleSort(to_sort)
-        elif typeSort==3:
-            # Quick sort
-            self._totalComparisons = 0
-            self.quickSort(to_sort)
+            if chosenSize == 6:
+                # Back to top of loop
+                continue
+
+            to_sort: List[int] = self.generate_array(Sorter.SORT_SIZES[chosenSize-1])
+
+
+            if typeSort==1:
+                # Merge sort
+
+                self._totalComparisons = 0
+                self.mergeSort(to_sort)
+
+                print(f"Completed with {colored(str(self._totalComparisons), 'green')} comparisons!")
+
+
+            elif typeSort==2:
+                # Bubble sort
+                self._totalComparisons = 0
+                self.bubbleSort(to_sort)
+
+                print(f"Completed with {colored(str(self._totalComparisons), 'green')} comparisons!")
+            elif typeSort==3:
+                # Quick sort
+                self._totalComparisons = 0
+                self.quickSort(to_sort)
+
+                print(f"Completed with {colored(str(self._totalComparisons), 'green')} comparisons!")
+
+            elif typeSort==4:
+                # Comparisons not applicable for Radix sort
+                # No need to reset totalComparisons
+
+                self.radixSort(to_sort)
+            elif typeSort==5:
+                #Back to main menu
+                return
+
+
+            break
 
 
     def mergeSort(self, arr:List[int], level:int=1) -> List[int]:
@@ -141,4 +176,7 @@ class Sorter:
         raise NotImplementedError
 
     def quickSort(self, arr:List[int] ) -> None:
+        raise NotImplementedError
+
+    def radixSort(self, arr: List[int]) -> None:
         raise NotImplementedError
