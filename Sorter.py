@@ -1,14 +1,22 @@
 from typing import List, Tuple
 import random
 from termcolor import colored # Allows coloured text in terminal
-
+import time
 class Sorter:
     SMALL_SORT = 8
     MED_SORT = 15
     LARGE_SORT = 25
-    SORT_SIZES = [SMALL_SORT,MED_SORT,LARGE_SORT]
-    NUMBER_SORTS = 4
+    EXTREME_SORT = 100
+    SORT_SIZES = [SMALL_SORT,MED_SORT,LARGE_SORT, EXTREME_SORT]
     NUM_SIZES = 5
+
+
+    NUMBER_SORTS = 4
+    SLOW_ANIM = 1.5
+    MED_ANIM = 0.5
+    FAST_ANIM = 0.2
+    INSTA_ANIM = 0
+
 
 
     def __init__(self) -> None:
@@ -18,6 +26,11 @@ class Sorter:
         self._outputStepsL: bool = True
         # Contains steps in the form (string, state of array)
         self._mergeSortSteps: List[Tuple[str, List[int]]] = []
+
+        # Instant, fast, med, slow, user
+        self._animationSpeeds: List[int] = [Sorter.INSTA_ANIM, Sorter.FAST_ANIM, Sorter.MED_ANIM, Sorter.SLOW_ANIM]
+
+
 
     def getValidChoice(self, upper: int, menuChoice: int = 0, lower: int = 1) -> int:
 
@@ -44,6 +57,26 @@ class Sorter:
 
         return nums
 
+
+    def new_sorting_menu(self):
+        print("-" * 20, "Sorting choice menu", "-" * 20)
+        print("Enter arguments space separated")
+        print("-"*40)
+        print("First argument: Type of sort (Case insensitive)")
+        print("b: Bubble Sort", "m: Merge Sort")
+        print("q: Quick Sort", "r: Radix Sort")
+        print("-"*40)
+        print("Second argument: Array size (Case insensitive)")
+        print("Leave blank for Small sort with fast animation")
+        print(f"s: Small ({Sorter.SMALL_SORT} nums)", f"m: Medium ({Sorter.MED_SORT} nums)")
+        print(f"l: Large ({Sorter.LARGE_SORT} nums)", f"e: Extreme ({Sorter.EXTREME_SORT} nums)")
+        print("-"*40)
+        print("Third argument: Animation speed (Case insensitive)")
+        print("Leave blank for Fast Animation speed")
+        print(f"i: Instant (0 second delay)", f"f: Fast ({Sorter.FAST_ANIM} second delay)")
+        print(f"m: Medium ({Sorter.MED_SORT} second delay)", f"s: Slow ({Sorter.SLOW_ANIM} second delay)")
+        print("-"*40)
+
     def display_type_menu(self):
         print("-"*20, "Sorting choice menu","-"*20)
         print("1) For Merge sort")
@@ -60,7 +93,7 @@ class Sorter:
         print("1) For Small array (8 elements)")
         print("2) For Medium array (15 elements)")
         print("3) For Large array (25 elements")
-        print("4) For Extreme (1000 elements) - (Individual steps not shown, just comparisons made) ")
+        print("4) For Extreme (100 elements) - (Individual steps not shown, just comparisons made) ")
         print("5) For load own input numbers from text file")
         print("6) Back to previous menu")
         print("-"*40)
@@ -219,7 +252,20 @@ class Sorter:
 
 
 
-    def outputMergeSortSteps(self):
+    def outputMergeSortSteps(self, anim_speed: int =1) -> None:
 
         for step in self._mergeSortSteps:
+            time.sleep(self._animationSpeeds[anim_speed])
             print(step[0], step[1])
+
+
+
+
+
+
+
+
+
+
+
+
