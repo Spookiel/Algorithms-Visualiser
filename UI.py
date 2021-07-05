@@ -5,6 +5,10 @@ from Sorter import Sorter
 
 import random
 
+import os
+def clear_terminal():
+    os.system('cls')
+
 class UI(ABC):
 
 
@@ -66,7 +70,7 @@ class Terminal(UI):
             if int_choice==1:
                 self._sorter.process_sorting_choice()
             elif int_choice==2:
-                self._sorter.new_sorting_menu()
+                pass
             elif int_choice==3:
                 pass
             elif int_choice==4:

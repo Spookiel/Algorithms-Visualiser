@@ -1,12 +1,11 @@
 import sys
 from UI import GUI, Terminal
+import os
 
 def usage():
     print("run with t as second argument for terminal mode")
     print("run with g as second argument for GUI mode")
     print("-"*40+"\n")
-
-
 
 
 if __name__=="__main__":
