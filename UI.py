@@ -9,7 +9,7 @@ class UI(ABC):
 
 
     def __init__(self):
-        self._simulator = Simulator()
+        self._simulator: Simulator = Simulator()
 
 
     @property
@@ -26,7 +26,7 @@ class GUI(UI):
 
     def __init__(self) -> None:
         super().__init__()
-        self._renderer = Renderer()
+        self._renderer: Renderer = Renderer()
 
     def run(self) -> None:
         raise NotImplementedError
@@ -44,7 +44,7 @@ class Terminal(UI):
     def __init__(self) -> None:
         super().__init__()
 
-        self._sorter = Sorter()
+        self._sorter: Sorter = Sorter()
 
 
     def run(self) -> None:

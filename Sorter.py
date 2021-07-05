@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 import random
 from termcolor import colored # Allows coloured text in terminal
 
@@ -16,6 +16,8 @@ class Sorter:
         self.MENU_LOOKUP = ["", self.display_type_menu, self.display_size_menu]
         self._totalComparisons: int = 0
         self._outputStepsL: bool = True
+        # Contains steps in the form (string, state of array)
+        self._mergeSortSteps: List[Tuple[str, List[int]]] = []
 
     def getValidChoice(self, upper: int, menuChoice: int = 0, lower: int = 1) -> int:
 
@@ -95,6 +97,7 @@ class Sorter:
                 self._totalComparisons = 0
                 self.mergeSort(to_sort)
 
+                self.outputMergeSortSteps()
                 print(f"Completed with {colored(str(self._totalComparisons), 'green')} comparisons!")
 
 
@@ -131,9 +134,22 @@ class Sorter:
         leftArr = arr[:mid]
         rightArr = arr[mid:]
 
-        print(f"{colored('sorting', 'yellow')} main array at level {level}", arr)
 
-        print(f"{colored('sorting', 'red')} left array at level {level}", leftArr)
+        step_descrip : str = f"{colored('sorting', 'yellow')} main array at level {level}"
+        arr_store: List[int] = arr[:] # [:] to copy the array to prevent mutable type issues
+
+        self._mergeSortSteps.append((step_descrip, arr_store))
+
+        #print(f"{colored('sorting', 'yellow')} main array at level {level}", arr)
+
+
+        step_descrip: str = f"{colored('sorting', 'red')} left array at level {level}"
+        arr_store: List[int] = leftArr[:]
+
+        self._mergeSortSteps.append((step_descrip, arr_store))
+
+
+
         if len(leftArr) > 2:
             leftArr = self.mergeSort(leftArr, level+1)
         else:
@@ -141,9 +157,18 @@ class Sorter:
                 self._totalComparisons += 1
                 if leftArr[0] > leftArr[1]:
                     leftArr = leftArr[::-1]
-        print(f"Left array {colored('sorted', 'green')} at level {level}", leftArr)
 
-        print(f"{colored('sorting', 'red')} right array at level {level}", rightArr)
+        step_descrip: str = f"Left array {colored('sorted', 'green')} at level {level}"
+        arr_store: List[int] = leftArr[:]
+
+        self._mergeSortSteps.append((step_descrip, arr_store))
+
+
+        step_descrip: str = f"{colored('sorting', 'red')} right array at level {level}"
+        arr_store: List[int] = rightArr[:]
+
+        self._mergeSortSteps.append((step_descrip, arr_store))
+
         if len(rightArr) > 2:
             rightArr = self.mergeSort(rightArr, level+1)
         else:
@@ -152,7 +177,12 @@ class Sorter:
                 if rightArr[0] > rightArr[1]:
                     rightArr = rightArr[::-1]
 
-        print(f"Right array {colored('sorted', 'green')} at level {level}", rightArr)
+        step_descrip: str = f"Right array {colored('sorted', 'green')} at level {level}"
+        arr_store: List[int] = rightArr[:]
+
+        self._mergeSortSteps.append((step_descrip, arr_store))
+
+        #print(f"Right array {colored('sorted', 'green')} at level {level}", rightArr)
 
 
         # Knowing that the two lists are sorted, we can run through the two arrays using separate pointers
@@ -168,7 +198,12 @@ class Sorter:
         merged.extend(leftArr)
         merged.extend(rightArr)
 
-        print(f"{colored('Merged', 'green')} array at level {level}", merged)
+        step_descrip: str = f"{colored('Merged', 'green')} array at level {level}"
+        arr_store: List[int] = merged[:]
+
+        self._mergeSortSteps.append((step_descrip, arr_store))
+
+        # print(f"{colored('Merged', 'green')} array at level {level}", merged)
         return merged
 
 
@@ -180,3 +215,11 @@ class Sorter:
 
     def radixSort(self, arr: List[int]) -> None:
         raise NotImplementedError
+
+
+
+
+    def outputMergeSortSteps(self):
+
+        for step in self._mergeSortSteps:
+            print(step[0], step[1])
