@@ -44,7 +44,7 @@ class MergeSort(Sort):
         super().__init__()
 
 
-    def process_sort(self, size=1) -> List[Tuple[str, List[int]]]:
+    def process_sort(self, size=1):
         #Only handles the generation of the _steps array, output will be handled by Sorter class
 
         self._steps: List[Tuple[str, List[int]]] = []     # Resets after each sort
@@ -136,3 +136,37 @@ class MergeSort(Sort):
         # print(f"{colored('Merged', 'green')} array at level {level}", merged)
         return merged
 
+
+class BubbleSort(Sort):
+
+
+    def __init__(self):
+        super().__init__()
+
+
+    def process_sort(self) -> List[Tuple[str, List[int]]]:
+        pass
+
+    def sort_array(self, arr: List[int]):
+        pass
+
+
+class RadixSort(Sort):
+    def __init__(self):
+        super().__init__()
+
+    def process_sort(self):
+        pass
+
+    def sort_array(self, arr: List[int]):
+        pass
+
+class QuickSort(Sort):
+    def __init__(self):
+        super().__init__()
+
+    def process_sort(self) -> List[Tuple[str, List[int]]]:
+        pass
+
+    def sort_array(self, arr: List[int]):
+        pass
