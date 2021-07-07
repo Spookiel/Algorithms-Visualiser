@@ -12,6 +12,13 @@ class Sort(ABC):
     SORT_SIZES = [SMALL_SORT,MED_SORT,LARGE_SORT, EXTREME_SORT]
     NUM_SIZES = 5
 
+
+    SLOW_ANIM = 1.5
+    MED_ANIM = 0.5
+    FAST_ANIM = 0.1
+    INSTA_ANIM = 0
+    ANIM_SPEEDS = [SLOW_ANIM, MED_ANIM, FAST_ANIM, INSTA_ANIM]
+
     def __init__(self):
 
         self._steps: List[Tuple[str, List[int]]] = []
@@ -210,7 +217,10 @@ class BubbleSort(Sort):
             self._iterations += 1
 
     def output_steps(self):
-        raise NotImplementedError
+
+
+        for step in self._steps:
+            print(step)
 
 
 
@@ -245,3 +255,4 @@ class QuickSort(Sort):
 tBubble = BubbleSort()
 to_sort = Sort.generate_array(10)
 tBubble.sort_array(to_sort)
+tBubble.output_steps()

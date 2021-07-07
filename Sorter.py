@@ -8,11 +8,7 @@ from Sorts import Sort, MergeSort
 
 
 class Sorter:
-    NUMBER_SORTS = 4
-    SLOW_ANIM = 1.5
-    MED_ANIM = 0.5
-    FAST_ANIM = 0.1
-    INSTA_ANIM = 0
+
 
     POSSIBLE_ARGS = ["bqrm", "smle", "smfi"]
 
@@ -27,8 +23,6 @@ class Sorter:
         self._mergeSort = MergeSort()
 
 
-        # Instant, fast, med, slow, user
-        self._animationSpeeds: List[int] = [Sorter.SLOW_ANIM, Sorter.MED_ANIM, Sorter.FAST_ANIM, Sorter.INSTA_ANIM]
 
 
     def display_sorting_menu(self):
@@ -117,13 +111,6 @@ class Sorter:
         raise NotImplementedError
 
 
-
-
-    def outputSortSteps(self, steps: List[Tuple[str, List[int]]], anim_speed: int =1) -> None:
-
-        for step in steps:
-            time.sleep(self._animationSpeeds[anim_speed])
-            print(step[0], step[1])
 
 
 
