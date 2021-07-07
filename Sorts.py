@@ -238,10 +238,10 @@ class RadixSort(Sort):
         super().__init__()
 
     def process_sort(self, size: int = 1, speed: int = 1):
-        pass
+        raise NotImplementedError
 
     def sort_array(self, arr: List[int]):
-        pass
+        raise NotImplementedError
 
     def output_steps(self):
         raise NotImplementedError
@@ -251,10 +251,10 @@ class QuickSort(Sort):
         super().__init__()
 
     def process_sort(self, size:int = 1, speed: int = 1) -> List[Tuple[str, List[int]]]:
-        pass
+        raise NotImplementedError
 
     def sort_array(self, arr: List[int]):
-        pass
+        raise NotImplementedError
 
     def output_steps(self):
         raise NotImplementedError
