@@ -34,7 +34,9 @@ class Sort(ABC):
     def process_sort(self):
         raise NotImplementedError
 
-
+    @abstractmethod
+    def output_steps(self):
+        raise NotImplementedError
 
 class MergeSort(Sort):
 
@@ -137,6 +139,10 @@ class MergeSort(Sort):
         return merged
 
 
+    def output_steps(self):
+        raise NotImplementedError
+
+
 class BubbleSort(Sort):
 
 
@@ -203,7 +209,8 @@ class BubbleSort(Sort):
                 self._steps.append(step)
             self._iterations += 1
 
-
+    def output_steps(self):
+        raise NotImplementedError
 
 
 
@@ -218,6 +225,9 @@ class RadixSort(Sort):
     def sort_array(self, arr: List[int]):
         pass
 
+    def output_steps(self):
+        raise NotImplementedError
+
 class QuickSort(Sort):
     def __init__(self):
         super().__init__()
@@ -227,6 +237,9 @@ class QuickSort(Sort):
 
     def sort_array(self, arr: List[int]):
         pass
+
+    def output_steps(self):
+        raise NotImplementedError
 
 
 tBubble = BubbleSort()
