@@ -2,7 +2,7 @@ from abc import ABC,abstractmethod
 import random
 from termcolor import colored # Allows coloured text in terminal
 from typing import List, Tuple
-
+import time
 
 class Sort(ABC):
     SMALL_SORT = 8
@@ -13,9 +13,9 @@ class Sort(ABC):
     NUM_SIZES = 5
 
 
-    SLOW_ANIM = 1.5
-    MED_ANIM = 0.5
-    FAST_ANIM = 0.1
+    SLOW_ANIM = 1
+    MED_ANIM = 0.2
+    FAST_ANIM = 0.05
     INSTA_ANIM = 0
     ANIM_SPEEDS = [SLOW_ANIM, MED_ANIM, FAST_ANIM, INSTA_ANIM]
 
@@ -38,7 +38,7 @@ class Sort(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def process_sort(self):
+    def process_sort(self, size: int = 1, delay: int = 2):
         raise NotImplementedError
 
     @abstractmethod
@@ -52,18 +52,17 @@ class MergeSort(Sort):
 
         super().__init__()
 
+    def process_sort(self, size: int = 1, delay: int = 2) -> None:
 
-    def process_sort(self, size=1):
-        #Only handles the generation of the _steps array, output will be handled by Sorter class
 
         self._steps: List[Tuple[str, List[int]]] = []     # Resets after each sort
         self._totalComparisons: int = 0
 
-        to_sort: List[int] = Sort.generate_array(size)
+        to_sort: List[int] = Sort.generate_array(Sort.SORT_SIZES[size])
 
         self.sort_array(to_sort)
-
-        return self._steps
+        self.output_steps(delay)
+        print(f"[Sorted array with {self._totalComparisons} comparisons!]")
 
 
     def sort_array(self, arr:List[int], level:int=1) -> List[int]:
@@ -146,9 +145,11 @@ class MergeSort(Sort):
         return merged
 
 
-    def output_steps(self):
-        raise NotImplementedError
+    def output_steps(self, delay: int = 2):
 
+        for descrip, arr in self._steps:
+            time.sleep(Sort.ANIM_SPEEDS[delay])
+            print(descrip, arr)
 
 class BubbleSort(Sort):
 
@@ -160,27 +161,25 @@ class BubbleSort(Sort):
         self._iterations = 0
 
 
-    def process_sort(self, size=1) -> List[str]:
+    def process_sort(self, size=1, speed=1) -> List[str]:
         self._iterations = 0
 
-        to_sort = Sort.generate_array(size)
+        to_sort = Sort.generate_array(Sort.SORT_SIZES[size])
 
         self.sort_array(to_sort)
 
-
-
-        return self._steps
+        self.output_steps(speed)
 
 
 
 
 
-    def getColoredArray(self, arr: List[int], curPointer: int) -> str:
+    def getColoredArray(self, arr: List[int], curPointer: int=-1) -> str:
 
 
-
-        arr[curPointer] = colored(arr[curPointer], "yellow")
-        arr[curPointer+1] = colored(arr[curPointer+1], "yellow")
+        if curPointer!=-1:
+            arr[curPointer] = colored(arr[curPointer], "yellow")
+            arr[curPointer+1] = colored(arr[curPointer+1], "yellow")
         #print(-self._iterations)
         #print(-self._iterations)
         for i in range(-self._iterations, 0, 1):
@@ -200,7 +199,7 @@ class BubbleSort(Sort):
             for ind in range(len(arr)-self._iterations-1):
                 lastSwapped = False
 
-
+                self._totalComparisons += 1
                 if arr[ind] > arr[ind+1]:
                     arr[ind],arr[ind+1] = arr[ind+1], arr[ind]
                     swapped = True
@@ -216,10 +215,19 @@ class BubbleSort(Sort):
                 self._steps.append(step)
             self._iterations += 1
 
-    def output_steps(self):
+
+        # Add final step where the whole array is green
+        self._iterations = len(arr)
+        col_str: str = self.getColoredArray(arr[:])
+        step = f"[Sorted with {self._totalComparisons} comparisons!]"+"   "+col_str
+        self._steps.append(step)
+
+    def output_steps(self, delay: int = 2) -> None:
+        # Delay is fast speed by default
 
 
         for step in self._steps:
+            time.sleep(Sort.ANIM_SPEEDS[delay])
             print(step)
 
 
@@ -229,7 +237,7 @@ class RadixSort(Sort):
     def __init__(self):
         super().__init__()
 
-    def process_sort(self):
+    def process_sort(self, size: int = 1, speed: int = 1):
         pass
 
     def sort_array(self, arr: List[int]):
@@ -242,7 +250,7 @@ class QuickSort(Sort):
     def __init__(self):
         super().__init__()
 
-    def process_sort(self) -> List[Tuple[str, List[int]]]:
+    def process_sort(self, size:int = 1, speed: int = 1) -> List[Tuple[str, List[int]]]:
         pass
 
     def sort_array(self, arr: List[int]):
@@ -252,7 +260,4 @@ class QuickSort(Sort):
         raise NotImplementedError
 
 
-tBubble = BubbleSort()
-to_sort = Sort.generate_array(10)
-tBubble.sort_array(to_sort)
-tBubble.output_steps()
+

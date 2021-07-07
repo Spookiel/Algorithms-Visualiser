@@ -3,7 +3,7 @@ import random
 from termcolor import colored # Allows coloured text in terminal
 import sys
 import time
-from Sorts import Sort, MergeSort
+from Sorts import Sort, MergeSort, BubbleSort, QuickSort, RadixSort
 
 
 
@@ -21,6 +21,9 @@ class Sorter:
         # Contains steps in the form (string, state of array)
 
         self._mergeSort = MergeSort()
+        self._bubbleSort = BubbleSort()
+        self._radixSort = RadixSort()
+        self._quickSort = QuickSort()
 
 
 
@@ -41,8 +44,8 @@ class Sorter:
         print("-"*40)
         print("Third argument: Animation speed (Case insensitive)")
         print("Leave blank for Fast Animation speed")
-        print(f"i: Instant (0 second delay)", f"f: Fast ({Sorter.FAST_ANIM} second delay)")
-        print(f"m: Medium ({Sorter.MED_ANIM} second delay)", f"s: Slow ({Sorter.SLOW_ANIM} second delay)")
+        print(f"i: Instant (0 second delay)", f"f: Fast ({Sort.FAST_ANIM} second delay)")
+        print(f"m: Medium ({Sort.MED_ANIM} second delay)", f"s: Slow ({Sort.SLOW_ANIM} second delay)")
         print("-"*40)
 
 
@@ -69,26 +72,26 @@ class Sorter:
             if self._test_sorting_args(args):
 
                 conv_args: List = self._convert_args(args)
+                s_type, size, speed = conv_args
+                
+
+                if s_type == "m":
+                    
+                    self._mergeSort.process_sort(size, speed)
 
 
 
-                if conv_args[0]=="m":
+                elif s_type == "q":
 
-                    steps = self._mergeSort.process_sort(Sort.SORT_SIZES[conv_args[1]])
-                    print(conv_args)
-                    self.outputSortSteps(steps, conv_args[2])
-
-
-
-                elif conv_args[0]=="q":
-                    pass
+                    self._quickSort.process_sort(size, speed)
                     #Quick sort
-                elif conv_args[0]=="b":
-                    #Bubble sort
-                    pass
-                elif conv_args[0]=="r":
-                    #Radix sort
-                    pass
+                elif s_type == "b":
+
+                    self._bubbleSort.process_sort(size, speed)
+
+                elif s_type == "r":
+
+                    self._radixSort.process_sort(size, speed)
                 # Valid arguments,
             else:
 
@@ -100,15 +103,6 @@ class Sorter:
 
 
 
-
-    def bubbleSort(self, arr:List[int] ) -> None:
-        raise NotImplementedError
-
-    def quickSort(self, arr:List[int] ) -> None:
-        raise NotImplementedError
-
-    def radixSort(self, arr: List[int]) -> None:
-        raise NotImplementedError
 
 
 
