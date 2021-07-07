@@ -147,11 +147,14 @@ class Sorter:
 
         converted: List = [arg.lower() for arg in args]
         if len(converted)==1:
+
             converted.extend([1,2]) # Defaults for missing args
         elif len(converted)==2:
+
             converted[1] = size_lookup[converted[1]]
             converted.append(2)
         else:
+
             converted[1] = size_lookup[converted[1]]
             converted[2] = anim_lookup[converted[2]]
 

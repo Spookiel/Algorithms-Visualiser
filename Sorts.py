@@ -143,12 +143,69 @@ class BubbleSort(Sort):
     def __init__(self):
         super().__init__()
 
+        self._steps: List[str] = []
+        self._iterations = 0
 
-    def process_sort(self) -> List[Tuple[str, List[int]]]:
-        pass
+
+    def process_sort(self, size=1) -> List[str]:
+        self._iterations = 0
+
+        to_sort = Sort.generate_array(size)
+
+        self.sort_array(to_sort)
+
+
+
+        return self._steps
+
+
+
+
+
+    def getColoredArray(self, arr: List[int], curPointer: int) -> str:
+
+
+
+        arr[curPointer] = colored(arr[curPointer], "yellow")
+        arr[curPointer+1] = colored(arr[curPointer+1], "yellow")
+        #print(-self._iterations)
+        #print(-self._iterations)
+        for i in range(-self._iterations, 0, 1):
+            #print(i)
+            arr[i] = colored(arr[i], "green")
+
+
+
+        return " ".join(list(map(str, arr)))
 
     def sort_array(self, arr: List[int]):
-        pass
+
+        swapped = True
+
+        while swapped:
+            swapped = False
+            for ind in range(len(arr)-self._iterations-1):
+                lastSwapped = False
+
+
+                if arr[ind] > arr[ind+1]:
+                    arr[ind],arr[ind+1] = arr[ind+1], arr[ind]
+                    swapped = True
+                    lastSwapped = True
+
+
+                col_str: str = self.getColoredArray(arr[:], ind)
+                if lastSwapped:
+                    step = f"[{arr[ind+1]} is greater than {arr[ind]} - moving {arr[ind+1]} up]"+"   "+col_str
+                else:
+                    step = f"[{arr[ind]} is less than {arr[ind+1]}, No swap]"+"   "+col_str
+
+                self._steps.append(step)
+            self._iterations += 1
+
+
+
+
 
 
 class RadixSort(Sort):
@@ -170,3 +227,8 @@ class QuickSort(Sort):
 
     def sort_array(self, arr: List[int]):
         pass
+
+
+tBubble = BubbleSort()
+to_sort = Sort.generate_array(10)
+tBubble.sort_array(to_sort)
