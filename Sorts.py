@@ -38,7 +38,7 @@ class Sort(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def process_sort(self, size: int = 1, delay: int = 2):
+    def process_sort(self, size: int = 1, delay: int = 2) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -145,7 +145,7 @@ class MergeSort(Sort):
         return merged
 
 
-    def output_steps(self, delay: int = 2):
+    def output_steps(self, delay: int = 2) -> None:
 
         for descrip, arr in self._steps:
             time.sleep(Sort.ANIM_SPEEDS[delay])
@@ -161,7 +161,7 @@ class BubbleSort(Sort):
         self._iterations = 0
 
 
-    def process_sort(self, size=1, speed=1) -> List[str]:
+    def process_sort(self, size=1, speed=1) -> None:
         self._iterations = 0
 
         to_sort = Sort.generate_array(Sort.SORT_SIZES[size])
@@ -190,7 +190,7 @@ class BubbleSort(Sort):
 
         return " ".join(list(map(str, arr)))
 
-    def sort_array(self, arr: List[int]):
+    def sort_array(self, arr: List[int]) -> None:
 
         swapped = True
 
