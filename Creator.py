@@ -2,7 +2,8 @@ from abc import ABC
 from typing import List
 import random
 from termcolor import colored
-from math import ceil
+from typing import Tuple
+
 
 class Creator(ABC):
     def __init__(self) -> None:
@@ -26,7 +27,7 @@ class GridCreator():
         self._grid: List[List[str]] = []
 
 
-    def generate_grid(self, size:int = 1):
+    def generate_grid(self, size:int = 1) -> None:
 
         # Generate a 2D array filled with zeroes
 
@@ -36,11 +37,12 @@ class GridCreator():
         self.gen_start_end()
         self.generate_all_obstacles()
 
-    def _print_grid(self):
+    def _print_grid(self) -> None:
 
         for row in self._grid:
             print(*row)
-    def place_obstacle(self, ob_size):
+
+    def place_obstacle(self, ob_size) -> bool:
 
         row = random.randint(0,len(self._grid)-ob_size-1)
         col = random.randint(0,len(self._grid) - ob_size - 1)
@@ -54,14 +56,13 @@ class GridCreator():
                     can = False
 
         if can:
-            #print("chosen", row, col, ob_size)
             for rrow in range(row, row + ob_size):
                 for ccol in range(col, col + ob_size):
                     self._grid[rrow][ccol] = colored("#", "red")
 
         return can
 
-    def generate_all_obstacles(self):
+    def generate_all_obstacles(self) -> None:
 
 
         for ob_size in range(len(self._grid)//4, 0,-1):
@@ -78,17 +79,20 @@ class GridCreator():
                 tries += 1
 
 
-    def gen_point(self, xlim=0, ylim=0):
+    def gen_point(self, xlim=0, ylim=0) -> Tuple[int, int]:
         return random.randint(xlim, len(self._grid)-xlim-1), random.randint(ylim, len(self._grid)-ylim-1)
-    def dist(self, p1, p2):
+
+
+    def dist(self, p1, p2) -> int:
         return abs(p1[0]-p2[0])+abs(p2[0]-p2[1])
 
-    def gen_start_end(self):
+    def gen_start_end(self) -> None:
 
         while True:
             self._start, self._end = self.gen_point(), self.gen_point()
+
             if self.dist(self._start, self._end) > len(self._grid)//3:
-                 break
+                break
 
         sy, sx = self._start
         ey, ex = self._end

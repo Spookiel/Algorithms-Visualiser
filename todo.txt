@@ -9,3 +9,5 @@
 5. Add coloured text to menus
 
 6. Implement other Sort classes - Bubble, Radix, Quick
+
+7. Add typing for gridCreator class attributes and methods
