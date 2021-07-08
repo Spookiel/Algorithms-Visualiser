@@ -22,7 +22,10 @@ class GraphCreator():
 
 class GridCreator():
 
+    SMALL_SIZE = 8
     MED_SIZE = 15
+    LARGE_SIZE = 30
+    SIZES = [SMALL_SIZE, MED_SIZE, LARGE_SIZE]
     OB_DENSITY = 5
     def __init__(self) -> None:
 
@@ -45,7 +48,7 @@ class GridCreator():
         for row in self._grid:
             print(*row)
 
-    def place_obstacle(self, ob_size) -> bool:
+    def place_obstacle(self, ob_size: int) -> bool:
 
         # Generates upper left corner position of obstacle
         row = random.randint(0,len(self._grid)-ob_size-1)
@@ -87,7 +90,7 @@ class GridCreator():
         return random.randint(xlim, len(self._grid)-xlim-1), random.randint(ylim, len(self._grid)-ylim-1)
 
 
-    def dist(self, p1, p2) -> int:
+    def dist(self, p1: Tuple[int, int], p2: Tuple[int, int]) -> int:
         return abs(p1[0]-p2[0])+abs(p2[0]-p2[1])
 
     def gen_start_end(self) -> None:
