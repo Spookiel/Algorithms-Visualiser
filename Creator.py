@@ -7,7 +7,9 @@ from typing import Tuple
 
 class Creator(ABC):
     def __init__(self) -> None:
-        pass
+        self._mazeCreator = MazeCreator()
+        self._graphCreator = GraphCreator()
+        self._gridCreator = GridCreator()
 
 
 class MazeCreator():
