@@ -9,5 +9,3 @@
 5. Add coloured text to menus
 
 6. Implement other Sort classes - Bubble, Radix, Quick
-7. Re-implement number of comparisons for each sort, at the moment it is calculated but not outputted
-8. Move output steps function to Sort parent class?
