@@ -1,8 +1,5 @@
-from typing import List, Tuple
-import random
+from typing import List
 from termcolor import colored # Allows coloured text in terminal
-import sys
-import time
 from Sorts import Sort, MergeSort, BubbleSort, QuickSort, RadixSort
 
 
