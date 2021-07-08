@@ -25,7 +25,8 @@ class GridCreator():
     def __init__(self) -> None:
 
         self._grid: List[List[str]] = []
-
+        self._start = (0,0)
+        self._end = (0,0)
 
     def generate_grid(self, size:int = 1) -> None:
 
@@ -44,12 +45,13 @@ class GridCreator():
 
     def place_obstacle(self, ob_size) -> bool:
 
+        # Generates upper left corner position of obstacle
         row = random.randint(0,len(self._grid)-ob_size-1)
         col = random.randint(0,len(self._grid) - ob_size - 1)
 
 
         can = True
-
+        # Checks if obstacle zone is free, (including one extra square)
         for rrow in range(row-1, row+ob_size+1):
             for ccol in range(col-1, col+ob_size+1):
                 if self._grid[rrow][ccol]!=".":
@@ -88,11 +90,15 @@ class GridCreator():
 
     def gen_start_end(self) -> None:
 
+        # Ensure points are suitably separated
         while True:
             self._start, self._end = self.gen_point(), self.gen_point()
 
             if self.dist(self._start, self._end) > len(self._grid)//3:
                 break
+
+        #Generates and assigns start, end locations to the grid
+        # Marks locations with green colour
 
         sy, sx = self._start
         ey, ex = self._end
