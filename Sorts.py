@@ -180,10 +180,8 @@ class BubbleSort(Sort):
         if curPointer!=-1:
             arr[curPointer] = colored(arr[curPointer], "yellow")
             arr[curPointer+1] = colored(arr[curPointer+1], "yellow")
-        #print(-self._iterations)
-        #print(-self._iterations)
+
         for i in range(-self._iterations, 0, 1):
-            #print(i)
             arr[i] = colored(arr[i], "green")
 
 

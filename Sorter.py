@@ -16,9 +16,7 @@ class Sorter:
 
     def __init__(self) -> None:
 
-        self._totalComparisons: int = 0
-        self._outputStepsL: bool = True
-        # Contains steps in the form (string, state of array)
+        self._outputSteps: bool = True
 
         self._mergeSort = MergeSort()
         self._bubbleSort = BubbleSort()
@@ -73,18 +71,15 @@ class Sorter:
 
                 conv_args: List = self._convert_args(args)
                 s_type, size, speed = conv_args
-                
 
                 if s_type == "m":
                     
                     self._mergeSort.process_sort(size, speed)
 
-
-
                 elif s_type == "q":
-
+                    # Quick sort
                     self._quickSort.process_sort(size, speed)
-                    #Quick sort
+
                 elif s_type == "b":
 
                     self._bubbleSort.process_sort(size, speed)
@@ -92,7 +87,6 @@ class Sorter:
                 elif s_type == "r":
 
                     self._radixSort.process_sort(size, speed)
-                # Valid arguments,
             else:
 
                 print("Invalid arguments, returning to main menu")
