@@ -23,7 +23,7 @@ class GraphCreator():
 class GridCreator():
 
     SMALL_SIZE = 8
-    START_COL = END_COL = "blue"
+    START_COL = END_COL = "grey"
     MED_SIZE = 15
     LARGE_SIZE = 30
     SIZES = [SMALL_SIZE, MED_SIZE, LARGE_SIZE]
@@ -45,7 +45,7 @@ class GridCreator():
                 self._grid[rrow][ccol] = colored("#", "red")
 
 
-    def generate_grid(self, size:int = 1) -> None:
+    def generate_grid(self, size:int = 1) -> List[List[str]]:
 
         # Generate a 2D array filled with zeroes
 
@@ -55,6 +55,7 @@ class GridCreator():
         self.gen_start_end()
         self.generate_all_obstacles()
 
+        return self._grid
     def _print_grid(self) -> None:
 
         for row in self._grid:
@@ -128,8 +129,8 @@ class GridCreator():
 
 
 
-
+"""
 tg = GridCreator()
 
 tg.generate_grid(25)
-tg._print_grid()
+tg._print_grid()"""
