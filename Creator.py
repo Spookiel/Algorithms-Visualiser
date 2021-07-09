@@ -23,15 +23,27 @@ class GraphCreator():
 class GridCreator():
 
     SMALL_SIZE = 8
+    START_COL = END_COL = "blue"
     MED_SIZE = 15
     LARGE_SIZE = 30
     SIZES = [SMALL_SIZE, MED_SIZE, LARGE_SIZE]
-    OB_DENSITY = 5
+
+    DRAW_PROB = 0.1
+
     def __init__(self) -> None:
 
         self._grid: List[List[str]] = []
         self._start = (0,0)
         self._end = (0,0)
+
+
+    def draw_obstacle(self, top_left: Tuple[int, int], ob_size):
+        row: int = top_left[0]
+        col: int = top_left[1]
+        for rrow in range(row, row + ob_size):
+            for ccol in range(col, col + ob_size):
+                self._grid[rrow][ccol] = colored("#", "red")
+
 
     def generate_grid(self, size:int = 1) -> None:
 
@@ -48,7 +60,7 @@ class GridCreator():
         for row in self._grid:
             print(*row)
 
-    def place_obstacle(self, ob_size: int) -> bool:
+    def check_obstacle(self, ob_size: int) -> Tuple[bool, int, int]:
 
         # Generates upper left corner position of obstacle
         row = random.randint(0,len(self._grid)-ob_size-1)
@@ -62,12 +74,7 @@ class GridCreator():
                 if self._grid[rrow][ccol]!=".":
                     can = False
 
-        if can:
-            for rrow in range(row, row + ob_size):
-                for ccol in range(col, col + ob_size):
-                    self._grid[rrow][ccol] = colored("#", "red")
-
-        return can
+        return (can, row, col)
 
     def generate_all_obstacles(self) -> None:
 
@@ -76,10 +83,15 @@ class GridCreator():
 
             tries = 0
             suc = 0
-            targ = (len(self._grid)//4)-ob_size+GridCreator.OB_DENSITY
+            targ = (len(self._grid)//4)-ob_size
             while True:
 
-                if self.place_obstacle(ob_size):
+                can, x,y = self.check_obstacle(ob_size)
+                if can:
+                    shouldDraw = random.random()
+
+                    if shouldDraw < GridCreator.DRAW_PROB:
+                        self.draw_obstacle((x, y), ob_size)
                     suc += 1
                 if tries > 80 or suc == targ:
                     break
@@ -108,8 +120,8 @@ class GridCreator():
         sy, sx = self._start
         ey, ex = self._end
 
-        self._grid[sy][sx] = colored("s", "green")
-        self._grid[ey][ex] = colored("e", "green")
+        self._grid[sy][sx] = colored("s", GridCreator.START_COL)
+        self._grid[ey][ex] = colored("e", GridCreator.END_COL)
 
 
 
@@ -119,5 +131,5 @@ class GridCreator():
 
 tg = GridCreator()
 
-tg.generate_grid(15)
+tg.generate_grid(25)
 tg._print_grid()
