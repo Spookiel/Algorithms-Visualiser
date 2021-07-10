@@ -51,6 +51,8 @@ class BFS(Search):
 
     def process_search(self, grid):
         self._curGrid = grid
+        self._pathSteps = []
+        self._steps = []
 
         self.bfs()
         self.outputSteps()
