@@ -3,6 +3,8 @@ from termcolor import colored
 from typing import Tuple
 from collections import deque
 from Creator import GridCreator
+import time
+
 
 class Solver(ABC):
     def __init__(self) -> None:
@@ -67,6 +69,15 @@ class GridSolver():
             nextNode, dist = queue.pop(0)
             #print(dist, nextNode, lastDist)
             valAt = self.getVal(nextNode)
+
+            if lastDist!=dist:
+                # Record grid state and update last dist
+                lastDist = int(dist) # Careful of copying errors
+
+                copGrid = []
+                for row in self._curGrid:
+                    copGrid.append(row[:])
+                self._steps.append(copGrid)
             # Colour green because have been searched
             if "s" not in valAt and "e" not in valAt:
                 # Not a start or end point so should colour green
@@ -92,19 +103,14 @@ class GridSolver():
                     # Colour this node yellow on the grid
                     if "e" not in self.getVal(adjNode):
                         self._curGrid[adjNode[1]][adjNode[0]] = colored(".", "blue")
+                    #print("Adding", adjNode, "From", nextNode, "Dist", dist)
                     queue.append((adjNode, dist+1))
-            if lastDist!=dist:
-                # Record grid state and update last dist
-                lastDist = int(dist) # Careful of copying errors
 
-                copGrid = []
-                for row in self._curGrid:
-                    copGrid.append(row[:])
-                self._steps.append(copGrid)
 
     def outputSteps(self):
 
         for step in self._steps:
+            time.sleep(0.8)
             for row in step:
                 print(*row)
             print("-"*40)
