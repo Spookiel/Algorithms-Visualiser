@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from termcolor import colored
 from typing import Tuple
 from collections import deque
@@ -10,14 +10,34 @@ class Solver(ABC):
     def __init__(self) -> None:
         pass
 
+    @abstractmethod
+    def display_menu(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def process_choice(self):
+        raise NotImplementedError
+
 
 class MazeSolver():
     def __init__(self) -> None:
         pass
 
+    def display_menu(self):
+        raise NotImplementedError
+
+    def process_choice(self):
+        raise NotImplementedError
+
 class GraphSolver():
     def __init__(self) -> None:
         pass
+
+    def display_menu(self):
+        raise NotImplementedError
+
+    def process_choice(self):
+        raise NotImplementedError
 class GridSolver():
     def __init__(self) -> None:
         self._curGrid = [] #Stores current copy of the grid
@@ -26,7 +46,11 @@ class GridSolver():
         self.end: Tuple[int, int] = 0, 0
         self.parents = {}
 
+    def display_menu(self):
+        raise NotImplementedError
 
+    def process_choice(self):
+        raise NotImplementedError
 
 
 tc = GridCreator()

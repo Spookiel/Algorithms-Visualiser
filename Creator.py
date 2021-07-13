@@ -30,7 +30,7 @@ class GridCreator():
     TILE = "0"
     STILE = "S"
     ETILE = "E"
-    DRAW_PROB = 0.1
+    DRAW_PROB = 0.5
 
     def __init__(self) -> None:
 

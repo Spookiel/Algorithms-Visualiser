@@ -5,6 +5,10 @@ from termcolor import colored
 import time
 
 class Search:
+
+    adj4: List[List[int]] = [[0, 1], [1, 0], [-1, 0], [0, -1]]
+    adj8: List[List[int]] = adj4 + [[1, 1], [-1, 1], [1, -1], [-1, -1]]
+
     def __init__(self):
         self._curGrid = []
 
@@ -46,6 +50,8 @@ class BFS(Search):
         super().__init__()
         self._pathSteps = []
         self._steps = []
+        self.__finalDist = 0
+        self.__checked = 0
 
 
 
@@ -56,11 +62,18 @@ class BFS(Search):
 
         self.bfs()
         self.outputSteps()
-        self.process_path()
-    def process_path(self):
-        self.tracePath()
-        self.storePath()
-        self.outputPath()
+        self.__process_path()
+
+        print("-"*5, "Search information", "-"*5)
+        print(f"Distance: {self.__finalDist}")
+        print(f"Tiles checked: {self.__checked}")
+        print(f"Board size: {len(self._curGrid)}x{len(self._curGrid)}")
+
+
+    def __process_path(self):
+        self.__tracePath()
+        self.__storePath()
+        self.__outputPath()
 
 
     def bfs(self):
@@ -96,26 +109,29 @@ class BFS(Search):
 
             if GridCreator.ETILE in val_at:
                 # Reached end so stop
+                self.__finalDist = dist
                 break
-
 
             # Go to adjacent nodes
 
-            for dx, dy in [[0,1], [1,0], [-1,0], [0,-1]]:
+            for dx, dy in Search.adj4:
                 nx, ny = next_node[0]+dx, next_node[1]+dy
-                adjNode = (nx, ny)
+                
+                adj_node: Tuple[int, int] = (nx, ny)
 
-                if self.checkLim(adjNode) and adjNode not in seen and "#" not in self.getVal(adjNode):
+                if self.checkLim(adj_node) and adj_node not in seen and "#" not in self.getVal(adj_node):
                     # New node is inside grid, and is not a barrier
-                    seen.add(adjNode)
-                    self.parents[adjNode] = next_node
+                    seen.add(adj_node)
+                    self.parents[adj_node] = next_node
 
 
                     # Colour this node yellow on the grid
-                    if GridCreator.ETILE not in self.getVal(adjNode):
-                        self._curGrid[adjNode[1]][adjNode[0]] = colored(GridCreator.TILE, "blue")
-                    #print("Adding", adjNode, "From", next_node, "Dist", dist)
-                    queue.append((adjNode, dist+1))
+                    if GridCreator.ETILE not in self.getVal(adj_node):
+                        self._curGrid[adj_node[1]][adj_node[0]] = colored(GridCreator.TILE, "blue")
+
+                    queue.append((adj_node, dist+1))
+
+        self.__checked = len(seen)
 
 
     def outputSteps(self):
@@ -127,7 +143,7 @@ class BFS(Search):
             print("-"*40)
 
 
-    def tracePath(self):
+    def __tracePath(self):
 
         self.path = [self.end]
         while self.path[-1] != self.start:
@@ -136,24 +152,26 @@ class BFS(Search):
         self.path = self.path[::-1]
         self.path.pop(0)
         self.path.pop(-1)
-    def storePath(self):
+    def __storePath(self):
 
         for loc in self.path:
             self._curGrid[loc[1]][loc[0]] = colored(GridCreator.TILE, "grey")
 
             self._pathSteps.append(deepcopy(self._curGrid))
 
-    def outputPath(self):
+    def __outputPath(self):
 
         for step in self._pathSteps:
             print("-"*40)
             time.sleep(0.5)
             for row in step:
                 print(*row)
+
+"""
 tc = GridCreator()
 
-grid = tc.generate_grid(20)
+grid = tc.generate_grid(10)
 tb = BFS()
 
-tb.process_search(grid)
+tb.process_search(grid)"""
 
