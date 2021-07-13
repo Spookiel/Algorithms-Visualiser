@@ -74,7 +74,7 @@ class Terminal(UI):
             elif int_choice==3:
                 pass
             elif int_choice==4:
-                pass
+                exit(1)
 
     def display_menu(self):
 
