@@ -10,13 +10,6 @@ class Solver(ABC):
     def __init__(self) -> None:
         pass
 
-    @abstractmethod
-    def display_menu(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    def process_choice(self):
-        raise NotImplementedError
 
 
 class MazeSolver():

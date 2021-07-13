@@ -8,6 +8,13 @@ def usage():
     print("-"*40+"\n")
 
 
+tlines = 0
+for file in os.listdir():
+    if file.endswith(".py"):
+        tlines += len(open(file).readlines())
+print(f"Total lines in the project: {tlines}")
+print("-"*40)
+
 if __name__=="__main__":
     usage()
 
@@ -41,3 +48,4 @@ if __name__=="__main__":
         ui.run()
     else:
         print("Bad arguments, please try again")
+

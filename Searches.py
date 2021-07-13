@@ -167,6 +167,16 @@ class BFS(Search):
             for row in step:
                 print(*row)
 
+
+
+
+class AStar(Search):
+    def __init__(self):
+        super().__init__()
+
+
+
+
 """
 tc = GridCreator()
 
