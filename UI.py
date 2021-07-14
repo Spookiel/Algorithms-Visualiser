@@ -70,7 +70,7 @@ class Terminal(UI):
             if int_choice==1:
                 self._sorter.process_sorting_choice()
             elif int_choice==2:
-                pass
+                self._simulator.process_grid_choice()
             elif int_choice==3:
                 pass
             elif int_choice==4:
