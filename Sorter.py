@@ -8,7 +8,8 @@ class Sorter:
 
 
     POSSIBLE_ARGS = ["bqrm", "smle", "smfi"]
-
+    DEFAULT_SIZE = 1
+    DEFAULT_ANIM = 2
 
 
     def __init__(self) -> None:
@@ -57,6 +58,8 @@ class Sorter:
             if self._test_sorting_args(args):
 
                 conv_args: List = self._convert_args(args)
+                assert len(conv_args) == 3
+
                 s_type, size, speed = conv_args
 
                 if s_type == "m":
@@ -81,22 +84,14 @@ class Sorter:
 
 
 
-
-
-
-
-
-
-
-
     def _test_sorting_args(self, args: List[str]) -> bool:
         if len(args) > len(Sorter.POSSIBLE_ARGS):
             return False
 
         for i in range(len(args)):
             if args[i].lower() not in Sorter.POSSIBLE_ARGS[i]:
-                #print(args[i], "not valid argument for position", i)
                 return False
+
         return True
 
 
@@ -106,15 +101,15 @@ class Sorter:
         anim_lookup = {"s":0, "m":1, "f":2, "i":3} # Matches letter input to index in class attribute Sorter._animationSpeeds
         # Convert args to lower case to make it easier to process
 
-
         converted: List = [arg.lower() for arg in args]
-        if len(converted)==1:
 
-            converted.extend([1,2]) # Defaults for missing args
-        elif len(converted)==2:
+        if len(converted) == 1:
+
+            converted.extend([Sorter.DEFAULT_SIZE, Sorter.DEFAULT_ANIM]) # Defaults for missing args
+        elif len(converted) == 2:
 
             converted[1] = size_lookup[converted[1]]
-            converted.append(2)
+            converted.append(Sorter.DEFAULT_ANIM)
         else:
 
             converted[1] = size_lookup[converted[1]]

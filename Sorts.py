@@ -12,7 +12,6 @@ class Sort(ABC):
     SORT_SIZES = [SMALL_SORT,MED_SORT,LARGE_SORT, EXTREME_SORT]
     NUM_SIZES = 5
 
-
     SLOW_ANIM = 1
     MED_ANIM = 0.2
     FAST_ANIM = 0.05
@@ -69,8 +68,8 @@ class MergeSort(Sort):
 
         mid = len(arr)//2
 
-        leftArr = arr[:mid]
-        rightArr = arr[mid:]
+        left_arr = arr[:mid]
+        right_arr = arr[mid:]
 
 
         step_descrip : str = f"{colored('sorting', 'yellow')} main array at level {level}"
@@ -78,63 +77,63 @@ class MergeSort(Sort):
 
         self._steps.append((step_descrip, arr_store))
 
-        #print(f"{colored('sorting', 'yellow')} main array at level {level}", arr)
 
 
         step_descrip: str = f"{colored('sorting', 'red')} left array at level {level}"
-        arr_store: List[int] = leftArr[:]
+        arr_store: List[int] = left_arr[:]
 
         self._steps.append((step_descrip, arr_store))
 
 
+        if len(left_arr) > 2:
+            left_arr = self.sort_array(left_arr, level+1)
 
-        if len(leftArr) > 2:
-            leftArr = self.sort_array(leftArr, level+1)
         else:
-            if len(leftArr)==2:
+
+            if len(left_arr) == 2:
                 self._totalComparisons += 1
-                if leftArr[0] > leftArr[1]:
-                    leftArr = leftArr[::-1]
+
+                if left_arr[0] > left_arr[1]:
+                    left_arr = left_arr[::-1]
 
         step_descrip: str = f"Left array {colored('sorted', 'green')} at level {level}"
-        arr_store: List[int] = leftArr[:]
+        arr_store: List[int] = left_arr[:]
 
         self._steps.append((step_descrip, arr_store))
 
 
         step_descrip: str = f"{colored('sorting', 'red')} right array at level {level}"
-        arr_store: List[int] = rightArr[:]
+        arr_store: List[int] = right_arr[:]
 
         self._steps.append((step_descrip, arr_store))
 
-        if len(rightArr) > 2:
-            rightArr = self.sort_array(rightArr, level+1)
+        if len(right_arr) > 2:
+            right_arr = self.sort_array(right_arr, level+1)
         else:
-            if len(rightArr)==2:
+            if len(right_arr)==2:
                 self._totalComparisons += 1
-                if rightArr[0] > rightArr[1]:
-                    rightArr = rightArr[::-1]
+                if right_arr[0] > right_arr[1]:
+                    right_arr = right_arr[::-1]
 
         step_descrip: str = f"Right array {colored('sorted', 'green')} at level {level}"
-        arr_store: List[int] = rightArr[:]
+        arr_store: List[int] = right_arr[:]
 
         self._steps.append((step_descrip, arr_store))
 
-        #print(f"Right array {colored('sorted', 'green')} at level {level}", rightArr)
 
 
         # Knowing that the two lists are sorted, we can run through the two arrays using separate pointers
 
         merged = []
-        while leftArr and rightArr:
-            if leftArr[0] <= rightArr[0]:
-                merged.append(leftArr.pop(0))
+        while left_arr and right_arr:
+            if left_arr[0] <= right_arr[0]:
+                merged.append(left_arr.pop(0))
             else:
-                merged.append(rightArr.pop(0))
+                merged.append(right_arr.pop(0))
             self._totalComparisons += 1
 
-        merged.extend(leftArr)
-        merged.extend(rightArr)
+        merged.extend(left_arr)
+        merged.extend(right_arr)
 
         step_descrip: str = f"{colored('Merged', 'green')} array at level {level}"
         arr_store: List[int] = merged[:]
@@ -148,6 +147,7 @@ class MergeSort(Sort):
     def output_steps(self, delay: int = 2) -> None:
 
         for descrip, arr in self._steps:
+            
             time.sleep(Sort.ANIM_SPEEDS[delay])
             print(descrip, arr)
 
@@ -176,15 +176,12 @@ class BubbleSort(Sort):
 
     def getColoredArray(self, arr: List[int], curPointer: int=-1) -> str:
 
-
-        if curPointer!=-1:
+        if curPointer != -1:
             arr[curPointer] = colored(arr[curPointer], "yellow")
             arr[curPointer+1] = colored(arr[curPointer+1], "yellow")
 
         for i in range(-self._iterations, 0, 1):
             arr[i] = colored(arr[i], "green")
-
-
 
         return " ".join(list(map(str, arr)))
 
@@ -195,18 +192,21 @@ class BubbleSort(Sort):
         while swapped:
             swapped = False
             for ind in range(len(arr)-self._iterations-1):
-                lastSwapped = False
+                
+                last_swapped = False
 
                 self._totalComparisons += 1
                 if arr[ind] > arr[ind+1]:
-                    arr[ind],arr[ind+1] = arr[ind+1], arr[ind]
+                    
+                    arr[ind], arr[ind+1] = arr[ind+1], arr[ind]
                     swapped = True
-                    lastSwapped = True
-
+                    last_swapped = True
 
                 col_str: str = self.getColoredArray(arr[:], ind)
-                if lastSwapped:
+                
+                if last_swapped:
                     step = f"[{arr[ind+1]} is greater than {arr[ind]} - moving {arr[ind+1]} up]"+"   "+col_str
+                    
                 else:
                     step = f"[{arr[ind]} is less than {arr[ind+1]}, No swap]"+"   "+col_str
 

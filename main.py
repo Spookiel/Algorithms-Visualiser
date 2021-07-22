@@ -15,33 +15,41 @@ for file in os.listdir():
 print(f"Total lines in the project: {tlines}")
 print("-"*40)
 
-if __name__=="__main__":
+if __name__ == "__main__":
     usage()
 
     isTerminal: bool = True
     isBad: bool = False
 
-    if len(sys.argv)==1:
+    if len(sys.argv) == 1:
+
         print("Assumed running from Pycharm, would you like terminal or GUI?")
         inMode = input("Enter mode? (t|g): ")
+
         if inMode not in "tg":
             isBad = True
-        elif inMode=="t":
+
+        elif inMode == "t":
             isTerminal = True
-        elif inMode=="g":
+
+        elif inMode == "g":
             isTerminal = False
 
     else:
-        if sys.argv[1]=="t":
+        if sys.argv[1] == "t":
             isTerminal = True
-        elif sys.argv[1]=="g":
+
+        elif sys.argv[1] == "g":
             isTerminal = False
+
         else:
             isBad = True
 
     if not isBad:
+
         if isTerminal:
             ui = Terminal()
+
         else:
             ui = GUI()
 
