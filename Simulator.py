@@ -1,7 +1,7 @@
 
 from abc import ABC
 from Solver import Solver
-from Creator import Creator
+from Creator import Creator, GridCreator
 from typing import List
 
 class Simulator(ABC):
@@ -11,17 +11,23 @@ class Simulator(ABC):
         self._solver = Solver()
 
 
-    def display_grid_menu(self) -> None:
+    def display_grid_generate_menu(self) -> None:
         """
         Displays the current menu for grid based operations
 
         :return: None
         """
 
+        print("-"*20, "Grid generation menu", "-"*20)
+        print("Enter arguments space separated")
+        print("-"*40)
+        print("First argument: Size of grid (Case insensitive)")
+        print(f"s: Small - {GridCreator.SMALL_SIZE}x{GridCreator.SMALL_SIZE}",
+              f"m: Medium - {GridCreator.MED_SIZE}x{GridCreator.MED_SIZE}",
+              f"l: Large - {GridCreator.LARGE_SIZE}x{GridCreator.LARGE_SIZE}")
     def display_maze_menu(self) -> None:
         """
         Displays the current menu for maze based operations
-
         :return: None
         """
 
@@ -39,9 +45,14 @@ class Simulator(ABC):
         :return: None
         """
 
+
+
+
+
+
         while True:
 
-            self.display_grid_menu()
+            self.display_grid_generate_menu()
 
             try:
                 args: List[str] = input("Enter arguments (space separated): ").split()
@@ -57,13 +68,14 @@ class Simulator(ABC):
                     print("Error with input, returning to main menu")
                     return
                 continue
-            if self._test_grid_args(args): # Here
+            if self._test_grid_gen_args(args):
 
-                conv_args: List = [] # Convert args to list here # Here
-                s_type, size, speed = conv_args
+                conv_args: List = self._convert_grid_gen_args(args) # Convert args to list here
+                size = conv_args[0] # Update when more args are added to grid generation
 
-                if s_type == "m":
-                    pass
+                self._creator._gridCreator.generate_grid(size)
+                self._creator._gridCreator._print_grid()
+
             else:
 
                 print("Invalid arguments, returning to main menu")
@@ -71,8 +83,28 @@ class Simulator(ABC):
 
 
 
-    def _test_grid_args(self, args):
-        pass
+    def _test_grid_gen_args(self, args):
+        if len(args) > len(GridCreator.GRID_GEN_ARGS):
+            return False
+
+        for ind, val in enumerate(args):
+            # Checks if the argument at a certain index is among the valid ones
+            if val.lower() not in GridCreator.GRID_GEN_ARGS[ind]:
+                return False
+
+        return True
 
     def _test_maze_args(self, args):
         pass
+
+    def _convert_grid_gen_args(self,args):
+        size_lookup = {"s":0, "m":1, "l":2}
+
+        converted: List = [arg.lower() for arg in args]
+        print(converted)
+        if len(converted)==0:
+            converted.append(1) # Default arg for size of grid
+        elif len(converted)==1:
+            converted[0] = size_lookup[converted[0]]
+
+        return converted

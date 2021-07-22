@@ -45,10 +45,9 @@ class GridSolver():
     def process_choice(self):
         raise NotImplementedError
 
-
+"""
 tc = GridCreator()
 grid = tc.generate_grid(30)
-"""
 
 
 ts = GridSolver()
