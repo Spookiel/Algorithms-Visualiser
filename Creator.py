@@ -3,9 +3,10 @@ from typing import List
 import random
 from termcolor import colored
 from typing import Tuple
-
+from math import ceil, sqrt
 
 class Creator(ABC):
+
     def __init__(self) -> None:
         self._mazeCreator = MazeCreator()
         self._graphCreator = GraphCreator()
@@ -21,7 +22,7 @@ class GraphCreator():
         pass
 
 class GridCreator():
-
+    GRID_GEN_ARGS = ["sml"]
     SMALL_SIZE = 8
     START_COL = END_COL = "grey"
     MED_SIZE = 15
@@ -50,8 +51,8 @@ class GridCreator():
     def generate_grid(self, size:int = 1) -> List[List[str]]:
 
         # Generate a 2D array filled with zeroes
-
-        self._grid = [[GridCreator.TILE for col in range(size)] for row in range(size)]
+        conv_size = GridCreator.SIZES[size]
+        self._grid = [[GridCreator.TILE for col in range(conv_size)] for row in range(conv_size)]
 
 
         self.gen_start_end()
@@ -82,23 +83,24 @@ class GridCreator():
     def generate_all_obstacles(self) -> None:
 
 
-        for ob_size in range(len(self._grid)//4, 0,-1):
+        for ob_size in range(ceil(sqrt(len(self._grid))), 0,-1):
 
             tries = 0
             suc = 0
-            targ = (len(self._grid)//4)-ob_size
+            targ = (len(self._grid)//2)-ob_size
             while True:
-
+                tries += 1
                 can, x,y = self.check_obstacle(ob_size)
                 if can:
+
                     shouldDraw = random.random()
 
                     if shouldDraw < GridCreator.DRAW_PROB:
                         self.draw_obstacle((x, y), ob_size)
                     suc += 1
-                if tries > 80 or suc == targ:
+                if tries > 40 or suc == targ:
                     break
-                tries += 1
+
 
 
     def gen_point(self, xlim=0, ylim=0) -> Tuple[int, int]:
