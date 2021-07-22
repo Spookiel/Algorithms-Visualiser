@@ -68,17 +68,21 @@ class Simulator(ABC):
                 self._creator._gridCreator.generate_grid(size)
                 self._creator._gridCreator._print_grid()
 
-                # Valid menu operation completed so return to main menu
-
-                # Now we need to display the grid solving menu and options
-
-                return
+                break # Go to next menu
 
             else:
 
                 print("Invalid arguments, returning to main menu")
                 return
+        while True:
+            back, args = utils.run_menu(self.display_grid_solve_menu)
 
+            if back:
+                return
+
+            if self._test_grid_solve_args(args):
+                conv_args: List = self._convert_grid_solve_args(args)
+                pass
 
 
     def _test_grid_gen_args(self, args):
