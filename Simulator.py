@@ -76,6 +76,9 @@ class Simulator(ABC):
                 self._creator._gridCreator.generate_grid(size)
                 self._creator._gridCreator._print_grid()
 
+                # Valid menu operation completed so return to main menu
+                return
+
             else:
 
                 print("Invalid arguments, returning to main menu")
@@ -90,6 +93,17 @@ class Simulator(ABC):
         for ind, val in enumerate(args):
             # Checks if the argument at a certain index is among the valid ones
             if val.lower() not in GridCreator.GRID_GEN_ARGS[ind]:
+                return False
+
+        return True
+
+    def _test_grid_solve_args(self, args):
+        if len(args) > len(GridCreator.GRID_SOLVE_ARGS):
+            return False
+
+        for ind, val in enumerate(args):
+            # Checks if the argument at a certain index is among the valid ones
+            if val.lower() not in GridCreator.GRID_SOLVE_ARGS[ind]:
                 return False
 
         return True

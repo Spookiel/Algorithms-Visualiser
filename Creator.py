@@ -23,6 +23,7 @@ class GraphCreator():
 
 class GridCreator():
     GRID_GEN_ARGS = ["sml"]
+    GRID_SOLVE_ARGS = []
     SMALL_SIZE = 8
     START_COL = END_COL = "grey"
     MED_SIZE = 15
