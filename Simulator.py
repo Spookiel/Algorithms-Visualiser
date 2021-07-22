@@ -4,13 +4,14 @@ from Solver import Solver
 from Creator import Creator, GridCreator
 from typing import List
 import utils
+from Searches import BFS
 
 class Simulator(ABC):
     def __init__(self) -> None:
 
         self._creator = Creator()
         self._solver = Solver()
-
+        self._bfs = BFS() # Temporary to test
 
     def display_grid_generate_menu(self) -> None:
         """
@@ -30,7 +31,7 @@ class Simulator(ABC):
         print("-"*40)
 
     def display_grid_solve_menu(self) -> None:
-        raise NotImplementedError
+        pass
 
 
 
@@ -77,12 +78,18 @@ class Simulator(ABC):
         while True:
             back, args = utils.run_menu(self.display_grid_solve_menu)
 
-            if back:
-                return
+            #if back:
+            #    return
 
             if self._test_grid_solve_args(args):
+
+                self._bfs.process_search(self._creator._gridCreator._grid)
                 conv_args: List = self._convert_grid_solve_args(args)
-                pass
+            else:
+
+                return
+
+            return
 
 
     def _test_grid_gen_args(self, args):
@@ -123,4 +130,4 @@ class Simulator(ABC):
         return converted
 
     def _convert_grid_solve_args(self, args):
-        raise NotImplementedError
+        return 1
