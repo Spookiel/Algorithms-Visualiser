@@ -3,6 +3,7 @@ from abc import ABC
 from Solver import Solver
 from Creator import Creator, GridCreator
 from typing import List
+import utils
 
 class Simulator(ABC):
     def __init__(self) -> None:
@@ -25,6 +26,15 @@ class Simulator(ABC):
         print(f"s: Small - {GridCreator.SMALL_SIZE}x{GridCreator.SMALL_SIZE}",
               f"m: Medium - {GridCreator.MED_SIZE}x{GridCreator.MED_SIZE}",
               f"l: Large - {GridCreator.LARGE_SIZE}x{GridCreator.LARGE_SIZE}")
+        print("Back: return to main menu")
+        print("-"*40)
+
+    def display_grid_solve_menu(self) -> None:
+        raise NotImplementedError
+
+
+
+
     def display_maze_menu(self) -> None:
         """
         Displays the current menu for maze based operations
@@ -44,30 +54,12 @@ class Simulator(ABC):
 
         :return: None
         """
-
-
-
-
-
-
         while True:
+            back, args = utils.run_menu(self.display_grid_generate_menu)
 
-            self.display_grid_generate_menu()
+            if back:
+                return
 
-            try:
-                args: List[str] = input("Enter arguments (space separated): ").split()
-                if args[0].lower() == "back":
-                    return
-            except:
-                print("Unknown error with input")
-                try:
-                    ans = input("would you like to return to main menu? (yY)")
-                    if ans in "yY":
-                        return
-                except:
-                    print("Error with input, returning to main menu")
-                    return
-                continue
             if self._test_grid_gen_args(args):
 
                 conv_args: List = self._convert_grid_gen_args(args) # Convert args to list here
@@ -77,6 +69,9 @@ class Simulator(ABC):
                 self._creator._gridCreator._print_grid()
 
                 # Valid menu operation completed so return to main menu
+
+                # Now we need to display the grid solving menu and options
+
                 return
 
             else:
@@ -109,7 +104,7 @@ class Simulator(ABC):
         return True
 
     def _test_maze_args(self, args):
-        pass
+        raise NotImplementedError
 
     def _convert_grid_gen_args(self,args):
         size_lookup = {"s":0, "m":1, "l":2}
@@ -122,3 +117,6 @@ class Simulator(ABC):
             converted[0] = size_lookup[converted[0]]
 
         return converted
+
+    def _convert_grid_solve_args(self, args):
+        raise NotImplementedError

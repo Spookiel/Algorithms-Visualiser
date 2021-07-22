@@ -1,7 +1,7 @@
 from typing import List
 from termcolor import colored # Allows coloured text in terminal
 from Sorts import Sort, MergeSort, BubbleSort, QuickSort, RadixSort
-
+import utils
 
 
 class Sorter:
@@ -49,21 +49,11 @@ class Sorter:
         while True:
 
             self.display_sorting_menu()
+            back, args = utils.run_menu(self.display_sorting_menu)
 
-            try:
-                args: List[str] = input("Enter arguments (space separated): ").split()
-                if args[0].lower() == "back":
-                    return
-            except:
-                print("Unknown error with input")
-                try:
-                    ans = input("would you like to return to main menu? (yY)")
-                    if ans in "yY":
-                        return
-                except:
-                    print("Error with input, returning to main menu")
-                    return
-                continue
+            if back:
+                return
+
             if self._test_sorting_args(args):
 
                 conv_args: List = self._convert_args(args)
