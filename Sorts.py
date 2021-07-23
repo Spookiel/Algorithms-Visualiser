@@ -285,7 +285,14 @@ class QuickSort(Sort):
 
 
     def _partition(self, arr: List[int], lo: int, hi: int) -> int:
+        """
+        Partitions array for quick sort, using the Lomutu partition system (stable)
 
+        :param arr:
+        :param lo:
+        :param hi:
+        :return:
+        """
         piv: int = arr[hi]
 
         ind: int = int(lo)
