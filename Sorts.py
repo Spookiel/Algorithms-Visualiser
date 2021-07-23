@@ -24,14 +24,6 @@ class Sort(ABC):
         self._totalComparisons = 0
 
 
-    @staticmethod
-    def generate_array(upto: int) -> List[int]:
-        nums = [i+1 for i in range(upto)]
-
-        random.shuffle(nums)
-
-        return nums
-
     @abstractmethod
     def sort_array(self, arr: List[int]):
         raise NotImplementedError
@@ -53,6 +45,14 @@ class Sort(ABC):
         :return None:
         """
         return None
+
+    @staticmethod
+    def generate_array(upto: int) -> List[int]:
+        nums = [i+1 for i in range(upto)]
+
+        random.shuffle(nums)
+
+        return nums
 
 
 class MergeSort(Sort):
