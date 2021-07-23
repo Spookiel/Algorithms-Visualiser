@@ -8,10 +8,11 @@
 
 5. Add coloured text to menus
 
-6. Implement other Sort classes - Radix, Quick
+6. Implement other Sort classes - Radix, Counting
 
 7. Add typing for gridCreator class attributes and methods
 
 
 8. Add typing returns for all new methods
 9. Implement options for Search methods
+10. Implement matplotlib animations for the different sorts
