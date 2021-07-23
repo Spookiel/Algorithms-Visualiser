@@ -25,6 +25,7 @@ def count_lines():
     tlines = 0
     for file in os.listdir():
         if file.endswith(".py"):
+            print(file, len(open(file).readlines()))
             tlines += len(open(file).readlines())
     print(f"Total lines in the project: {tlines}")
     print("-" * 40)
