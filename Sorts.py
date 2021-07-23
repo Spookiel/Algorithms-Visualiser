@@ -257,5 +257,16 @@ class QuickSort(Sort):
     def output_steps(self):
         raise NotImplementedError
 
+class CountingSort(Sort):
+    def __init__(self):
+        super().__init__()
 
+    def process_sort(self, size:int = 1, speed: int = 1) -> List[Tuple[str, List[int]]]:
+        raise NotImplementedError
+
+    def sort_array(self, arr: List[int]):
+        raise NotImplementedError
+
+    def output_steps(self):
+        raise NotImplementedError
 

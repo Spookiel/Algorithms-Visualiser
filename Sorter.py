@@ -1,6 +1,6 @@
 from typing import List
 from termcolor import colored # Allows coloured text in terminal
-from Sorts import Sort, MergeSort, BubbleSort, QuickSort, RadixSort
+from Sorts import Sort, MergeSort, BubbleSort, QuickSort, RadixSort, CountingSort
 import utils
 
 
@@ -20,7 +20,7 @@ class Sorter:
         self._bubbleSort = BubbleSort()
         self._radixSort = RadixSort()
         self._quickSort = QuickSort()
-
+        self._countSort = CountingSort()
 
 
 
@@ -31,6 +31,7 @@ class Sorter:
         print("First argument: Type of sort (Case insensitive)")
         print("b: Bubble Sort", "m: Merge Sort")
         print("q: Quick Sort", "r: Radix Sort")
+        print("c: Counting Sort")
         print("back: To return to main menu")
         print("-"*40)
         print("Second argument: Array size (Case insensitive)")
@@ -77,6 +78,9 @@ class Sorter:
                 elif s_type == "r":
 
                     self._radixSort.process_sort(size, speed)
+                elif s_type == "c":
+
+                    self._countSort.process_sort(size, speed)
             else:
 
                 print("Invalid arguments, returning to main menu")
