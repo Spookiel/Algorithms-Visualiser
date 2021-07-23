@@ -261,13 +261,17 @@ class QuickSort(Sort):
 
         self._quick_sort(arr, 0, len(arr)-1)
 
-    def _quick_sort(self, arr: List[int], lo: int, hi: int):
-        print(arr)
-        if lo < hi:
-            part = self._partition(arr, lo, hi)
+    def _quick_sort(self, arr: List[int], lo: int, hi: int, level:int = 1):
 
-            self._quick_sort(arr, lo, part-1)
-            self._quick_sort(arr, lo, part+1)
+        if lo < hi:
+            print(arr, arr[lo:hi + 1], lo, hi, "Sorting at level", level)
+            part = self._partition(arr, lo, hi)
+            print("Partition is", part)
+
+            self._quick_sort(arr, lo, part-1, level+1)
+            self._quick_sort(arr, part+1, hi, level+1)
+            print(arr, lo, hi, "Finished sorting at level", level)
+
 
     def _partition(self, arr: List[int], lo: int, hi: int) -> int:
 
@@ -275,7 +279,7 @@ class QuickSort(Sort):
 
         ind: int = int(lo)
 
-        for j in range(ind, hi+1):
+        for j in range(ind, hi):
             if arr[j] < piv:
                 arr[ind], arr[j] = arr[j], arr[ind]
                 ind += 1
