@@ -248,13 +248,44 @@ class QuickSort(Sort):
     def __init__(self):
         super().__init__()
 
-    def process_sort(self, size:int = 1, speed: int = 1) -> List[Tuple[str, List[int]]]:
-        raise NotImplementedError
+    def process_sort(self, size:int = 1, speed: int = 1) -> None:
+        self._iterations = 0
+
+        to_sort = Sort.generate_array(Sort.SORT_SIZES[size])
+
+        self.sort_array(to_sort)
+
+        self.output_steps(speed)
 
     def sort_array(self, arr: List[int]):
-        raise NotImplementedError
 
-    def output_steps(self):
+        self._quick_sort(arr, 0, len(arr)-1)
+
+    def _quick_sort(self, arr: List[int], lo: int, hi: int):
+        print(arr)
+        if lo < hi:
+            part = self._partition(arr, lo, hi)
+
+            self._quick_sort(arr, lo, part-1)
+            self._quick_sort(arr, lo, part+1)
+
+    def _partition(self, arr: List[int], lo: int, hi: int) -> int:
+
+        piv: int = arr[hi]
+
+        ind: int = int(lo)
+
+        for j in range(ind, hi+1):
+            if arr[j] < piv:
+                arr[ind], arr[j] = arr[j], arr[ind]
+                ind += 1
+
+        arr[ind], arr[hi] = arr[hi], arr[ind]
+        return ind
+
+
+
+    def output_steps(self, delay: int = 2):
         raise NotImplementedError
 
 class CountingSort(Sort):

@@ -1,5 +1,5 @@
 from typing import List, Tuple, Callable
-
+import os
 
 
 def run_menu(display_menu: Callable) -> Tuple[int, List]: # Return is of form (Back to previous menu, args)
@@ -20,5 +20,21 @@ def run_menu(display_menu: Callable) -> Tuple[int, List]: # Return is of form (B
         return 1, []
 
     return 0, args
+
+def count_lines():
+    tlines = 0
+    for file in os.listdir():
+        if file.endswith(".py"):
+            tlines += len(open(file).readlines())
+    print(f"Total lines in the project: {tlines}")
+    print("-" * 40)
+
+
+def usage():
+    print("run with t as second argument for terminal mode")
+    print("run with g as second argument for GUI mode")
+    print("-"*40+"\n")
+
+
 
 
