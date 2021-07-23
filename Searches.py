@@ -174,6 +174,53 @@ class AStar(Search):
     def __init__(self):
         super().__init__()
 
+        self._pathSteps = []
+        self._steps = []
+        self.__finalDist = 0
+        self.__checked = 0
+
+
+
+    def process_search(self, grid):
+        self._curGrid = grid
+        self._pathSteps = []
+        self._steps = []
+
+        self.astar()
+        self.outputSteps()
+        self.__process_path()
+
+        print("-"*5, "Search information", "-"*5)
+        print(f"Distance: {self.__finalDist}")
+        print(f"Tiles checked: {self.__checked}")
+        print(f"Board size: {len(self._curGrid)}x{len(self._curGrid)}")
+
+
+    def astar(self):
+        raise NotImplementedError
+
+    def outputSteps(self):
+
+        for step in self._steps:
+            time.sleep(0.8)
+            for row in step:
+                print(*row)
+            print("-"*40)
+
+
+    def __process_path(self):
+        self.__tracePath()
+        self.__storePath()
+        self.__outputPath()
+
+    def __tracePath(self):
+        raise NotImplementedError
+
+    def __storePath(self):
+        raise NotImplementedError
+
+    def __outputPath(self):
+        raise NotImplementedError
 
 
 
