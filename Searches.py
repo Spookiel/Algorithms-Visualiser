@@ -3,6 +3,7 @@ from typing import Tuple,List
 from Creator import GridCreator
 from termcolor import colored
 import time
+import heapq as hp
 
 class Search:
 
