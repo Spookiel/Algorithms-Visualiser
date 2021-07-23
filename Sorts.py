@@ -44,6 +44,17 @@ class Sort(ABC):
     def output_steps(self):
         raise NotImplementedError
 
+    @staticmethod
+    def show_animation(frames: List[List[int]]) -> None:
+        """
+        Generates a matplotlib animation for the given set of frames
+
+        :param frames:
+        :return None:
+        """
+        return None
+
+
 class MergeSort(Sort):
 
 
