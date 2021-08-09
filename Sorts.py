@@ -20,7 +20,7 @@ class Sort(ABC):
     FAST_ANIM = 0.05
     INSTA_ANIM = 0
     ANIM_SPEEDS = [SLOW_ANIM, MED_ANIM, FAST_ANIM, INSTA_ANIM]
-    MATPLOT_INTERVALS = [500,250, 10,5]
+    MATPLOT_INTERVALS = [500, 250, 10, 1]
 
     def __init__(self):
         self._steps: List[Tuple[str, List[int]]] = []
@@ -39,11 +39,15 @@ class Sort(ABC):
     def output_steps(self):
         raise NotImplementedError
 
-    @staticmethod
-    def update_fig(arr: List[int], bars, its: int):
-        for bar, val in zip(bars, arr):
-            bar.set_height(val)
+    def update_fig(self, arr: List[int], bars, comps):
 
+        for bar, val in zip(bars, arr):
+
+            #if bar.get_height() != val:
+            bar.set_height(val)
+        self.its += 1
+        self.__text.set_text("# of operations: {}".format(self.its))
+        self.__text2.set_text(f"Time elapsed: {round(time.time()-self._anim_start,4)}")
         # Add code to increment #iterations and draw them
         # Add code to change the colour of all bars which need to be highlighted
 
@@ -56,10 +60,10 @@ class Sort(ABC):
         """
 
         assert len(self.frames) > 0
-
+        print(len(self.frames))
         fig, ax = plt.subplots()
 
-        comparisons = 0
+        self.its = 0
         frames_gen = (f for f in self.frames)
 
         arr = next(frames_gen)
@@ -67,21 +71,22 @@ class Sort(ABC):
         bars = ax.bar(range(len(arr)), arr, align="edge")
 
         ax.set_xlim(0, len(arr))
-        
+        self.__text = ax.text(0.02, 0.95, "", transform=ax.transAxes)
+        self.__text2 = ax.text(0.02, 0.90, "", transform=ax.transAxes)
         # Calculate interval based on number of frames
 
         interval: int = 10   # Delay between frames in ms
         if len(self.frames) < 20:
             interval = Sort.MATPLOT_INTERVALS[0]
-        elif len(self.frames) < 50:
+        elif len(self.frames) < 100:
             interval = Sort.MATPLOT_INTERVALS[1]
         elif len(self.frames) < 200:
             interval = Sort.MATPLOT_INTERVALS[2]
         elif len(self.frames) > 200:
             interval = Sort.MATPLOT_INTERVALS[3]
-
-        anim = animation.FuncAnimation(fig, func=Sort.update_fig, fargs=(bars, comparisons), frames=frames_gen,
-                                       interval=interval, repeat=False, blit=True)
+        self._anim_start = time.time()
+        anim = animation.FuncAnimation(fig, func=self.update_fig, fargs=(bars,0), frames=frames_gen,
+                                       interval=interval, repeat=False)
 
         plt.show()
 
@@ -334,7 +339,7 @@ class QuickSort(Sort):
         return ind
 
     def output_steps(self, delay: int = 2):
-        raise NotImplementedError
+        pass
 
 
 class CountingSort(Sort):

@@ -35,8 +35,8 @@ class GridSolver():
     def __init__(self) -> None:
         self._curGrid = [] #Stores current copy of the grid
         self._steps = []
-        self.start: Tuple[int, int] = 0, 0
-        self.end: Tuple[int, int] = 0, 0
+        self.start: Tuple[int, int] = (0, 0)
+        self.end: Tuple[int, int] = (0, 0)
         self.parents = {}
 
     def display_menu(self):

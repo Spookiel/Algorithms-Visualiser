@@ -70,10 +70,12 @@ class Sorter:
                 elif s_type == "q":
                     # Quick sort
                     self._quickSort.process_sort(size, speed)
+                    self._quickSort.show_animation()
 
                 elif s_type == "b":
 
                     self._bubbleSort.process_sort(size, speed)
+                    self._bubbleSort.show_animation()
 
                 elif s_type == "r":
 
