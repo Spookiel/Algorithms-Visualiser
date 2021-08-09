@@ -22,6 +22,7 @@ class Sort(ABC):
 
         self._steps: List[Tuple[str, List[int]]] = []
         self._totalComparisons = 0
+        self._frames: List[List[int]] = []
 
 
     @abstractmethod
@@ -54,6 +55,9 @@ class Sort(ABC):
 
         return nums
 
+    @property
+    def frames(self):
+        return self._frames
 
 class MergeSort(Sort):
 
@@ -62,7 +66,7 @@ class MergeSort(Sort):
 
         super().__init__()
 
-    def process_sort(self, size: int = 1, delay: int = 2) -> None:
+    def process_sort(self, size: int = 1, delay: int = 2, display_text_steps: bool = True) -> None:
 
 
         self._steps: List[Tuple[str, List[int]]] = []     # Resets after each sort
@@ -71,7 +75,9 @@ class MergeSort(Sort):
         to_sort: List[int] = Sort.generate_array(Sort.SORT_SIZES[size])
 
         self.sort_array(to_sort)
-        self.output_steps(delay)
+
+        if not display_text_steps:
+            self.output_steps(delay)
         print(f"[Sorted array with {self._totalComparisons} comparisons!]")
 
 
@@ -171,15 +177,15 @@ class BubbleSort(Sort):
         self._steps: List[str] = []
         self._iterations = 0
 
-
-    def process_sort(self, size=1, speed=1) -> None:
+    def process_sort(self, size: int = 1, speed: int = 1, display_text_steps: bool = True) -> None:
         self._iterations = 0
 
         to_sort = Sort.generate_array(Sort.SORT_SIZES[size])
 
         self.sort_array(to_sort)
 
-        self.output_steps(speed)
+        if display_text_steps:
+            self.output_steps(speed)
 
 
 
@@ -212,6 +218,7 @@ class BubbleSort(Sort):
                     arr[ind], arr[ind+1] = arr[ind+1], arr[ind]
                     swapped = True
                     last_swapped = True
+                    self._frames.append(arr[:]) # Add frame to animation if element is swapped
 
                 col_str: str = self.getColoredArray(arr[:], ind)
                 
@@ -259,14 +266,15 @@ class QuickSort(Sort):
     def __init__(self):
         super().__init__()
 
-    def process_sort(self, size:int = 1, speed: int = 1) -> None:
+    def process_sort(self, size:int = 1, speed: int = 1, display_text_steps: bool = True) -> None:
         self._iterations = 0
 
         to_sort = Sort.generate_array(Sort.SORT_SIZES[size])
 
         self.sort_array(to_sort)
 
-        self.output_steps(speed)
+        if display_text_steps:
+            self.output_steps(speed)
 
     def sort_array(self, arr: List[int]):
 

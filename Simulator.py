@@ -31,7 +31,11 @@ class Simulator(ABC):
         print("-"*40)
 
     def display_grid_solve_menu(self) -> None:
-        pass
+        print("-"*20, "Grid searching menu", "-"*20)
+        print("Enter arguments space separated")
+        print("-"*40)
+        print("First argument: Type of search (Case insensitive)")
+        print(f"b: BFS (Floodfill")
 
 
 
