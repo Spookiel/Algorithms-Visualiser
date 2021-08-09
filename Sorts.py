@@ -37,14 +37,15 @@ class Sort(ABC):
     def output_steps(self):
         raise NotImplementedError
 
-    @staticmethod
-    def show_animation(frames: List[List[int]]) -> None:
+    def show_animation(self) -> None:
         """
         Generates a matplotlib animation for the given set of frames
 
         :param frames:
         :return None:
         """
+
+
         return None
 
     @staticmethod
@@ -80,8 +81,7 @@ class MergeSort(Sort):
             self.output_steps(delay)
         print(f"[Sorted array with {self._totalComparisons} comparisons!]")
 
-
-    def sort_array(self, arr:List[int], level:int=1) -> List[int]:
+    def sort_array(self, arr: List[int], level: int = 1) -> List[int]:
 
         mid = len(arr)//2
 
@@ -160,13 +160,13 @@ class MergeSort(Sort):
         # print(f"{colored('Merged', 'green')} array at level {level}", merged)
         return merged
 
-
     def output_steps(self, delay: int = 2) -> None:
 
         for descrip, arr in self._steps:
             
             time.sleep(Sort.ANIM_SPEEDS[delay])
             print(descrip, arr)
+
 
 class BubbleSort(Sort):
 
@@ -218,7 +218,7 @@ class BubbleSort(Sort):
                     arr[ind], arr[ind+1] = arr[ind+1], arr[ind]
                     swapped = True
                     last_swapped = True
-                    self._frames.append(arr[:]) # Add frame to animation if element is swapped
+                    self._frames.append(arr[:])  # Add frame to animation if element is swapped
 
                 col_str: str = self.getColoredArray(arr[:], ind)
                 
@@ -291,7 +291,6 @@ class QuickSort(Sort):
             self._quick_sort(arr, part+1, hi, level+1)
             print(arr, lo, hi, "Finished sorting at level", level)
 
-
     def _partition(self, arr: List[int], lo: int, hi: int) -> int:
         """
         Partitions array for quick sort, using the Lomutu partition system (stable)
@@ -309,8 +308,10 @@ class QuickSort(Sort):
             if arr[j] < piv:
                 arr[ind], arr[j] = arr[j], arr[ind]
                 ind += 1
+                self._frames.append(arr[:])
 
         arr[ind], arr[hi] = arr[hi], arr[ind]
+        self._frames.append(arr[:])
         return ind
 
 
