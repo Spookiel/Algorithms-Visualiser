@@ -47,7 +47,7 @@ class Sort(ABC):
             bar.set_height(val)
         self.its += 1
         self.__text.set_text("# of operations: {}".format(self.its))
-        self.__text2.set_text(f"Time elapsed: {round(time.time()-self._anim_start,4)}")
+        self.__text2.set_text(f"Time elapsed: {round(time.time()-self._anim_start,3)}")
         # Add code to increment #iterations and draw them
         # Add code to change the colour of all bars which need to be highlighted
 
@@ -63,6 +63,7 @@ class Sort(ABC):
         print(len(self.frames))
         fig, ax = plt.subplots()
 
+        plt.yticks([])
         self.its = 0
         frames_gen = (f for f in self.frames)
 
@@ -71,8 +72,9 @@ class Sort(ABC):
         bars = ax.bar(range(len(arr)), arr, align="edge")
 
         ax.set_xlim(0, len(arr))
-        self.__text = ax.text(0.02, 0.95, "", transform=ax.transAxes)
-        self.__text2 = ax.text(0.02, 0.90, "", transform=ax.transAxes)
+        ax.set_ylim(0, len(arr)*1.15)
+        self.__text = ax.text(0.02, 0.95, "", transform=ax.transAxes, fontfamily="serif")
+        self.__text2 = ax.text(0.02, 0.90, "", transform=ax.transAxes, fontfamily="serif")
         # Calculate interval based on number of frames
 
         interval: int = 10   # Delay between frames in ms
