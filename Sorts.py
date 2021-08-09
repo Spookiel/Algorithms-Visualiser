@@ -11,7 +11,7 @@ class Sort(ABC):
     SMALL_SORT = 8
     MED_SORT = 15
     LARGE_SORT = 25
-    EXTREME_SORT = 100
+    EXTREME_SORT = 150
     SORT_SIZES = [SMALL_SORT, MED_SORT, LARGE_SORT, EXTREME_SORT]
     NUM_SIZES = 5
 
@@ -20,11 +20,12 @@ class Sort(ABC):
     FAST_ANIM = 0.05
     INSTA_ANIM = 0
     ANIM_SPEEDS = [SLOW_ANIM, MED_ANIM, FAST_ANIM, INSTA_ANIM]
+    MATPLOT_INTERVALS = [500,250, 10,5]
 
     def __init__(self):
         self._steps: List[Tuple[str, List[int]]] = []
         self._totalComparisons = 0
-        self._frames: List[List[int]] = []
+        self._frames: List[Tuple[List[int], List[int]]] = [] # Stores array, indexes to highlight on that frame, where default is blue
 
     @abstractmethod
     def sort_array(self, arr: List[int]):
@@ -44,6 +45,7 @@ class Sort(ABC):
             bar.set_height(val)
 
         # Add code to increment #iterations and draw them
+        # Add code to change the colour of all bars which need to be highlighted
 
     def show_animation(self) -> None:
         """
@@ -52,6 +54,8 @@ class Sort(ABC):
         :param frames:
         :return None:
         """
+
+        assert len(self.frames) > 0
 
         fig, ax = plt.subplots()
 
@@ -63,9 +67,21 @@ class Sort(ABC):
         bars = ax.bar(range(len(arr)), arr, align="edge")
 
         ax.set_xlim(0, len(arr))
+        
+        # Calculate interval based on number of frames
+
+        interval: int = 10   # Delay between frames in ms
+        if len(self.frames) < 20:
+            interval = Sort.MATPLOT_INTERVALS[0]
+        elif len(self.frames) < 50:
+            interval = Sort.MATPLOT_INTERVALS[1]
+        elif len(self.frames) < 200:
+            interval = Sort.MATPLOT_INTERVALS[2]
+        elif len(self.frames) > 200:
+            interval = Sort.MATPLOT_INTERVALS[3]
 
         anim = animation.FuncAnimation(fig, func=Sort.update_fig, fargs=(bars, comparisons), frames=frames_gen,
-                                       interval=1, repeat=False)
+                                       interval=interval, repeat=False, blit=True)
 
         plt.show()
 
