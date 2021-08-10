@@ -21,7 +21,7 @@ class Sort(ABC):
     FAST_ANIM = 0.05
     INSTA_ANIM = 0
     ANIM_SPEEDS = [SLOW_ANIM, MED_ANIM, FAST_ANIM, INSTA_ANIM]
-    MATPLOT_INTERVALS = [250, 100, 10, 1]
+    MATPLOT_INTERVALS = [250, 100, 30, 10]
 
     HIGH_FREQ_BARS = 7
 
@@ -266,17 +266,6 @@ class BubbleSort(Sort):
 
 
 
-class RadixSort(Sort):
-    def __init__(self):
-        super().__init__()
-
-    def process_sort(self, size: int = 1, gen_type: int = 0):
-        raise NotImplementedError
-
-    def sort_array(self, arr: List[int]):
-        raise NotImplementedError
-
-
 
 class QuickSort(Sort):
     def __init__(self):
@@ -330,14 +319,20 @@ class QuickSort(Sort):
 
 
 
-class CountingSort(Sort):
+class RadixSort(Sort):
     def __init__(self):
         super().__init__()
 
-    def process_sort(self, size: int = 1, gen_type: int = 0) -> List[Tuple[str, List[int]]]:
+    def process_sort(self, size: int = 1, gen_type: int = 0):
         raise NotImplementedError
 
     def sort_array(self, arr: List[int]):
         raise NotImplementedError
+
+
+    def count_sort(self, arr):
+
+        N = len(arr)
+
 
 

@@ -1,6 +1,6 @@
 from typing import List
 from termcolor import colored # Allows coloured text in terminal
-from Sorts import Sort, MergeSort, BubbleSort, QuickSort, RadixSort, CountingSort
+from Sorts import Sort, MergeSort, BubbleSort, QuickSort, RadixSort
 import utils
 
 
@@ -20,7 +20,6 @@ class Sorter:
         self._bubbleSort = BubbleSort()
         self._radixSort = RadixSort()
         self._quickSort = QuickSort()
-        self._countSort = CountingSort()
 
 
 
@@ -82,8 +81,6 @@ class Sorter:
                 elif s_type == "r":
                     sort_obj = self._radixSort
 
-                elif s_type == "c":
-                    sort_obj = self._countSort
 
 
                 sort_obj.process_sort(size, gen_type)
