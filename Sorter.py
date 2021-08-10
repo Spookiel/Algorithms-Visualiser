@@ -9,7 +9,7 @@ class Sorter:
 
     POSSIBLE_ARGS = ["bqrm", "smle", "urh"]
     DEFAULT_SIZE = 1
-    DEFAULT_ANIM = 2
+    DEFAULT_SORT_TYPE = 0
 
 
     def __init__(self) -> None:
@@ -118,7 +118,7 @@ class Sorter:
         elif len(converted) == 2:
 
             converted[1] = size_lookup[converted[1]]
-            converted.append(Sorter.DEFAULT_ANIM)
+            converted.append(Sorter.DEFAULT_SORT_TYPE)
         else:
 
             converted[1] = size_lookup[converted[1]]
