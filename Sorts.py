@@ -82,6 +82,7 @@ class Sort(ABC):
         fig, ax = plt.subplots()
 
         plt.yticks([])
+        plt.xticks([])
         self.its = 0
         frames_gen = (f for f in self.frames)
 
