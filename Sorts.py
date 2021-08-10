@@ -12,7 +12,7 @@ class Sort(ABC):
     SMALL_SORT = 8
     MED_SORT = 15
     LARGE_SORT = 25
-    EXTREME_SORT = 100
+    EXTREME_SORT = 150
     SORT_SIZES = [SMALL_SORT, MED_SORT, LARGE_SORT, EXTREME_SORT]
     NUM_SIZES = 5
 
@@ -73,7 +73,7 @@ class Sort(ABC):
 
         self.col_look = cmap(rescale(sorted(arr)))
 
-        bars = ax.bar(range(len(arr)), arr, align="edge", color=self.col_look, alpha=0.8)
+        bars = ax.bar(range(len(arr)), arr, align="edge", color=self.col_look, alpha=0.88, width=1.0)
 
         ax.set_xlim(0, len(arr))
         ax.set_ylim(0, len(arr)*1.15)
@@ -103,6 +103,7 @@ class Sort(ABC):
             gifwriter = animation.PillowWriter(fps=60)
 
             anim.save(fpath, writer=gifwriter)
+        plt.tight_layout()
         plt.show()
 
     @staticmethod
