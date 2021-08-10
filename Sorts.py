@@ -27,6 +27,11 @@ class Sort(ABC):
         self._steps: List[Tuple[str, List[int]]] = []
         self._totalComparisons = 0
         self._frames: List[List[int]] = []
+        self._frameHighlights: List[List[Tuple[int, int]]] = [] # Stores bar index, colour of specific bars to highlight for each frame
+        self.col_look = None # Stores the colour map lookup which is initialised for each new animation
+        self.__timer_text = "" # Initialised within show_animation()
+        self.__iterations_text = "" # Initialised within show_animation()
+
 
     @abstractmethod
     def sort_array(self, arr: List[int]):
@@ -46,10 +51,21 @@ class Sort(ABC):
 
 
         self.its += 1
-        self.__text.set_text("# of operations: {}".format(self.its))
-        self.__text2.set_text(f"Time elapsed: {round(time.time()-self._anim_start,3)}")
+        self.__iterations_text.set_text("# of operations: {}".format(self.its))
+        self.__timer_text.set_text(f"Time elapsed: {round(time.time()-self._anim_start,3)}")
         # Add code to increment #iterations and draw them
         # Add code to change the colour of all bars which need to be highlighted
+
+
+    @staticmethod
+    def rescale(arr: List[int]):
+        """
+        Returns list of floats for use with matplotlib colour maps
+
+        :param arr:
+        :return:
+        """
+        return 1-((arr - np.min(arr)) / (np.max(arr) - np.min(arr)))
 
     def show_animation(self, save=False) -> None:
         """
@@ -69,17 +85,17 @@ class Sort(ABC):
 
         arr = next(frames_gen)
 
-        rescale = lambda y: 1-((y - np.min(y)) / (np.max(y) - np.min(y)))
-
-        self.col_look = cmap(rescale(sorted(arr)))
 
         bars = ax.bar(range(len(arr)), arr, align="edge", color=self.col_look, alpha=0.88, width=1.0)
+
+        self.col_look = cmap(Sort.rescale(sorted(arr)))
+
 
         ax.set_xlim(0, len(arr))
         ax.set_ylim(0, len(arr)*1.15)
 
-        self.__text = ax.text(0.02, 0.95, "", transform=ax.transAxes, fontfamily="serif")
-        self.__text2 = ax.text(0.02, 0.90, "", transform=ax.transAxes, fontfamily="serif")
+        self.__iterations_text = ax.text(0.02, 0.95, "", transform=ax.transAxes, fontfamily="serif")
+        self.__timer_text = ax.text(0.02, 0.90, "", transform=ax.transAxes, fontfamily="serif")
         # Calculate interval based on number of frames
 
         interval: int = 10   # Delay between frames in ms
