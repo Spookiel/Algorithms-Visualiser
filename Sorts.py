@@ -23,22 +23,24 @@ class Sort(ABC):
     ANIM_SPEEDS = [SLOW_ANIM, MED_ANIM, FAST_ANIM, INSTA_ANIM]
     MATPLOT_INTERVALS = [250, 100, 10, 1]
 
+    HIGH_FREQ_BARS = 7
+
     def __init__(self):
         self._steps: List[Tuple[str, List[int]]] = []
         self._totalComparisons = 0
         self._frames: List[List[int]] = []
         self._frameHighlights: List[List[Tuple[int, int]]] = [] # Stores bar index, colour of specific bars to highlight for each frame
         self.col_look = None # Stores the colour map lookup which is initialised for each new animation
-        self.__timer_text = "" # Initialised within show_animation()
-        self.__iterations_text = "" # Initialised within show_animation()
+        self.__timer_text = None # Initialised within show_animation()
+        self.__iterations_text = None # Initialised within show_animation()
 
 
     @abstractmethod
     def sort_array(self, arr: List[int]):
         raise NotImplementedError
-
+    
     @abstractmethod
-    def process_sort(self, size: int = 1, delay: int = 2) -> None:
+    def process_sort(self, size: int = 1, gen_type: int = 0) -> None:
         raise NotImplementedError
 
     def update_fig(self, arr: List[int], bars, comps):
@@ -123,12 +125,43 @@ class Sort(ABC):
         plt.show()
 
     @staticmethod
-    def generate_array(upto: int) -> List[int]:
-        nums = [i + 1 for i in range(upto)]
+    def generate_uni_array(upto: int) -> List[int]:
+        nums = [i+1 for i in range(upto)]
 
         random.shuffle(nums)
 
         return nums
+
+    @staticmethod
+    def generate_rand_array(upto: int) -> List[int]:
+
+        nums = [random.randint(1, upto) for _ in range(upto)]
+
+        return nums
+
+    @staticmethod
+    def generate_high_freq_array(upto: int) -> List[int]:
+
+
+        choices = [(upto*x)//Sort.HIGH_FREQ_BARS for x in range(1, Sort.HIGH_FREQ_BARS+1)]
+
+        nums = [random.choice(choices) for _ in range(upto)]
+
+
+        return nums
+    
+    @staticmethod
+    def generate(upto: int, gen_type: int = 0):
+        
+        if gen_type==0:
+            print("here0")
+            return Sort.generate_uni_array(upto)
+        elif gen_type==1:
+            print("here1")
+            return Sort.generate_rand_array(upto)
+        elif gen_type==2:
+            print("here2")
+            return Sort.generate_high_freq_array(upto)
 
     @property
     def frames(self):
@@ -143,12 +176,12 @@ class MergeSort(Sort):
 
         super().__init__()
 
-    def process_sort(self, size: int = 1, delay: int = 2) -> None:
+    def process_sort(self, size: int = 1, gen_type: int = 0) -> None:
 
         self._steps: List[Tuple[str, List[int]]] = []  # Resets after each sort
         self._totalComparisons: int = 0
         self._frames = []
-        to_sort: List[int] = Sort.generate_array(Sort.SORT_SIZES[size])
+        to_sort: List[int] = Sort.generate(Sort.SORT_SIZES[size], gen_type)
 
         self.sort_array(to_sort)
 
@@ -204,10 +237,10 @@ class BubbleSort(Sort):
         self._steps: List[str] = []
         self._iterations = 0
 
-    def process_sort(self, size: int = 1, speed: int = 1) -> None:
+    def process_sort(self, size: int = 1, gen_type: int = 0) -> None:
         self._iterations = 0
 
-        to_sort = Sort.generate_array(Sort.SORT_SIZES[size])
+        to_sort = Sort.generate(Sort.SORT_SIZES[size], gen_type)
 
         self._frames = []
 
@@ -237,7 +270,7 @@ class RadixSort(Sort):
     def __init__(self):
         super().__init__()
 
-    def process_sort(self, size: int = 1, speed: int = 1):
+    def process_sort(self, size: int = 1, gen_type: int = 0):
         raise NotImplementedError
 
     def sort_array(self, arr: List[int]):
@@ -249,10 +282,10 @@ class QuickSort(Sort):
     def __init__(self):
         super().__init__()
 
-    def process_sort(self, size: int = 1, speed: int = 1, display_text_steps: bool = True) -> None:
+    def process_sort(self, size: int = 1, gen_type: int = 0) -> None:
         self._iterations = 0
 
-        to_sort = Sort.generate_array(Sort.SORT_SIZES[size])
+        to_sort = Sort.generate(Sort.SORT_SIZES[size], gen_type)
         self._frames = []
         self.sort_array(to_sort)
 
@@ -301,7 +334,7 @@ class CountingSort(Sort):
     def __init__(self):
         super().__init__()
 
-    def process_sort(self, size: int = 1, speed: int = 1) -> List[Tuple[str, List[int]]]:
+    def process_sort(self, size: int = 1, gen_type: int = 0) -> List[Tuple[str, List[int]]]:
         raise NotImplementedError
 
     def sort_array(self, arr: List[int]):

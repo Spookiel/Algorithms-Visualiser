@@ -7,7 +7,7 @@ import utils
 class Sorter:
 
 
-    POSSIBLE_ARGS = ["bqrm", "smle", "smfi"]
+    POSSIBLE_ARGS = ["bqrm", "smle", "urh"]
     DEFAULT_SIZE = 1
     DEFAULT_ANIM = 2
 
@@ -39,10 +39,10 @@ class Sorter:
         print(f"s: Small ({Sort.SMALL_SORT} nums)", f"m: Medium ({Sort.MED_SORT} nums)")
         print(f"l: Large ({Sort.LARGE_SORT} nums)", f"e: Extreme ({Sort.EXTREME_SORT} nums)")
         print("-"*40)
-        print("Third argument: Animation speed (Case insensitive)")
-        print("Leave blank for Fast Animation speed")
-        print(f"i: Instant (0 second delay)", f"f: Fast ({Sort.FAST_ANIM} second delay)")
-        print(f"m: Medium ({Sort.MED_ANIM} second delay)", f"s: Slow ({Sort.SLOW_ANIM} second delay)")
+        print("Third argument: Type of array (Case insensitive)")
+        print("Leave blank for uniform array")
+        print(f"u: Uniform (Elements 1 -> N)", f"h: High frequency (Contains lots of similar elements)")
+        print(f"r: Random (Pseudo-randomly distributed elements)")
         print("-"*40)
 
 
@@ -61,28 +61,34 @@ class Sorter:
                 conv_args: List = self._convert_args(args)
                 assert len(conv_args) == 3
 
-                s_type, size, speed = conv_args
+                s_type, size, gen_type = conv_args
 
+                print(s_type, size, gen_type)
+
+                sort_obj = None
                 if s_type == "m":
-                    
-                    self._mergeSort.process_sort(size, speed)
+
+                    sort_obj = self._mergeSort
+
 
                 elif s_type == "q":
-                    # Quick sort
-                    self._quickSort.process_sort(size, speed)
-                    self._quickSort.show_animation()
+                    sort_obj = self._quickSort
+
 
                 elif s_type == "b":
+                    sort_obj = self._bubbleSort
 
-                    self._bubbleSort.process_sort(size, speed)
-                    self._bubbleSort.show_animation()
 
                 elif s_type == "r":
+                    sort_obj = self._radixSort
 
-                    self._radixSort.process_sort(size, speed)
                 elif s_type == "c":
+                    sort_obj = self._countSort
 
-                    self._countSort.process_sort(size, speed)
+
+                sort_obj.process_sort(size, gen_type)
+                sort_obj.show_animation()
+
             else:
 
                 print("Invalid arguments, returning to main menu")
@@ -104,7 +110,7 @@ class Sorter:
     def _convert_args(self, args: List[str]) -> List:
 
         size_lookup = {"s":0, "m":1, "l":2, "e":3} # Matches letter input to index in class attribute Sort.SORT_SIZES
-        anim_lookup = {"s":0, "m":1, "f":2, "i":3} # Matches letter input to index in class attribute Sorter._animationSpeeds
+        type_lookup = {"u":0, "r":1, "h":2} # Matches letter input to index in class attribute Sorter._animationSpeeds
         # Convert args to lower case to make it easier to process
 
         converted: List = [arg.lower() for arg in args]
@@ -119,7 +125,7 @@ class Sorter:
         else:
 
             converted[1] = size_lookup[converted[1]]
-            converted[2] = anim_lookup[converted[2]]
+            converted[2] = type_lookup[converted[2]]
 
         return converted
 
