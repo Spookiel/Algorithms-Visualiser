@@ -12,7 +12,7 @@ class Sort(ABC):
     SMALL_SORT = 8
     MED_SORT = 15
     LARGE_SORT = 25
-    EXTREME_SORT = 150
+    EXTREME_SORT = 100
     SORT_SIZES = [SMALL_SORT, MED_SORT, LARGE_SORT, EXTREME_SORT]
     NUM_SIZES = 5
 
@@ -26,7 +26,7 @@ class Sort(ABC):
     def __init__(self):
         self._steps: List[Tuple[str, List[int]]] = []
         self._totalComparisons = 0
-        self._frames: List[Tuple[List[int], List[int]]] = [] # Stores array, indexes to highlight on that frame, where default is blue
+        self._frames: List[List[int]] = []
 
     @abstractmethod
     def sort_array(self, arr: List[int]):
@@ -36,18 +36,15 @@ class Sort(ABC):
     def process_sort(self, size: int = 1, delay: int = 2) -> None:
         raise NotImplementedError
 
-    @abstractmethod
-    def output_steps(self):
-        raise NotImplementedError
-
     def update_fig(self, arr: List[int], bars, comps):
 
         for bar, val in zip(bars, arr):
 
-            #if bar.get_height() != val:
             bar.set_height(val)
-            #print(self.col_look[val-1])
+
             bar.set_color(self.col_look[val-1])
+
+
         self.its += 1
         self.__text.set_text("# of operations: {}".format(self.its))
         self.__text2.set_text(f"Time elapsed: {round(time.time()-self._anim_start,3)}")
@@ -63,7 +60,6 @@ class Sort(ABC):
         """
         cmap = plt.get_cmap("winter")
         assert len(self.frames) > 0
-        print(len(self.frames))
 
         fig, ax = plt.subplots()
 
@@ -96,9 +92,7 @@ class Sort(ABC):
         elif len(self.frames) > 200:
             interval = Sort.MATPLOT_INTERVALS[3]
 
-
         self._anim_start = time.time()
-
 
         anim = animation.FuncAnimation(fig, func=self.update_fig, fargs=(bars, 0), frames=frames_gen,
                                        interval=interval, repeat=False, save_count=len(self.frames))
@@ -124,13 +118,15 @@ class Sort(ABC):
         return self._frames
 
 # Re-write merge sort as in place sorting
+
+
 class MergeSort(Sort):
 
     def __init__(self):
 
         super().__init__()
 
-    def process_sort(self, size: int = 1, delay: int = 2, display_text_steps: bool = True) -> None:
+    def process_sort(self, size: int = 1, delay: int = 2) -> None:
 
         self._steps: List[Tuple[str, List[int]]] = []  # Resets after each sort
         self._totalComparisons: int = 0
@@ -139,10 +135,6 @@ class MergeSort(Sort):
 
         self.sort_array(to_sort)
 
-        if not display_text_steps:
-            self.output_steps(delay)
-        print(f"[Sorted array with {self._totalComparisons} comparisons!]")
-
     def sort_array(self, arr: List[int], level: int = 1) -> List[int]:
 
         mid = len(arr) // 2
@@ -150,15 +142,6 @@ class MergeSort(Sort):
         left_arr = arr[:mid]
         right_arr = arr[mid:]
 
-        step_descrip: str = f"{colored('sorting', 'yellow')} main array at level {level}"
-        arr_store: List[int] = arr[:]  # [:] to copy the array to prevent mutable type issues
-
-        self._steps.append((step_descrip, arr_store))
-
-        step_descrip: str = f"{colored('sorting', 'red')} left array at level {level}"
-        arr_store: List[int] = left_arr[:]
-
-        self._steps.append((step_descrip, arr_store))
 
         if len(left_arr) > 2:
             left_arr = self.sort_array(left_arr, level + 1)
@@ -171,16 +154,6 @@ class MergeSort(Sort):
                 if left_arr[0] > left_arr[1]:
                     left_arr = left_arr[::-1]
 
-        step_descrip: str = f"Left array {colored('sorted', 'green')} at level {level}"
-        arr_store: List[int] = left_arr[:]
-
-        self._steps.append((step_descrip, arr_store))
-
-        step_descrip: str = f"{colored('sorting', 'red')} right array at level {level}"
-        arr_store: List[int] = right_arr[:]
-
-        self._steps.append((step_descrip, arr_store))
-
         if len(right_arr) > 2:
             right_arr = self.sort_array(right_arr, level + 1)
         else:
@@ -188,11 +161,6 @@ class MergeSort(Sort):
                 self._totalComparisons += 1
                 if right_arr[0] > right_arr[1]:
                     right_arr = right_arr[::-1]
-
-        step_descrip: str = f"Right array {colored('sorted', 'green')} at level {level}"
-        arr_store: List[int] = right_arr[:]
-
-        self._steps.append((step_descrip, arr_store))
 
         # Knowing that the two lists are sorted, we can run through the two arrays using separate pointers
 
@@ -207,19 +175,8 @@ class MergeSort(Sort):
         merged.extend(left_arr)
         merged.extend(right_arr)
 
-        step_descrip: str = f"{colored('Merged', 'green')} array at level {level}"
-        arr_store: List[int] = merged[:]
-
-        self._steps.append((step_descrip, arr_store))
-
-        # print(f"{colored('Merged', 'green')} array at level {level}", merged)
         return merged
 
-    def output_steps(self, delay: int = 2) -> None:
-
-        for descrip, arr in self._steps:
-            time.sleep(Sort.ANIM_SPEEDS[delay])
-            print(descrip, arr)
 
 
 class BubbleSort(Sort):
@@ -230,7 +187,7 @@ class BubbleSort(Sort):
         self._steps: List[str] = []
         self._iterations = 0
 
-    def process_sort(self, size: int = 1, speed: int = 1, display_text_steps: bool = True) -> None:
+    def process_sort(self, size: int = 1, speed: int = 1) -> None:
         self._iterations = 0
 
         to_sort = Sort.generate_array(Sort.SORT_SIZES[size])
@@ -239,19 +196,6 @@ class BubbleSort(Sort):
 
         self.sort_array(to_sort)
 
-        if display_text_steps:
-            self.output_steps(speed)
-
-    def getColoredArray(self, arr: List[int], curPointer: int = -1) -> str:
-
-        if curPointer != -1:
-            arr[curPointer] = colored(arr[curPointer], "yellow")
-            arr[curPointer + 1] = colored(arr[curPointer + 1], "yellow")
-
-        for i in range(-self._iterations, 0, 1):
-            arr[i] = colored(arr[i], "green")
-
-        return " ".join(list(map(str, arr)))
 
     def sort_array(self, arr: List[int]) -> None:
 
@@ -261,38 +205,15 @@ class BubbleSort(Sort):
             swapped = False
             for ind in range(len(arr) - self._iterations - 1):
 
-                last_swapped = False
-
                 self._totalComparisons += 1
                 if arr[ind] > arr[ind + 1]:
                     arr[ind], arr[ind + 1] = arr[ind + 1], arr[ind]
                     swapped = True
-                    last_swapped = True
+
                     self._frames.append(arr[:])  # Add frame to animation if element is swapped
 
-                col_str: str = self.getColoredArray(arr[:], ind)
-
-                if last_swapped:
-                    step = f"[{arr[ind + 1]} is greater than {arr[ind]} - moving {arr[ind + 1]} up]" + "   " + col_str
-
-                else:
-                    step = f"[{arr[ind]} is less than {arr[ind + 1]}, No swap]" + "   " + col_str
-
-                self._steps.append(step)
             self._iterations += 1
 
-        # Add final step where the whole array is green
-        self._iterations = len(arr)
-        col_str: str = self.getColoredArray(arr[:])
-        step = f"[Sorted with {self._totalComparisons} comparisons!]" + "   " + col_str
-        self._steps.append(step)
-
-    def output_steps(self, delay: int = 2) -> None:
-        # Delay is fast speed by default
-
-        for step in self._steps:
-            time.sleep(Sort.ANIM_SPEEDS[delay])
-            print(step)
 
 
 class RadixSort(Sort):
@@ -305,8 +226,6 @@ class RadixSort(Sort):
     def sort_array(self, arr: List[int]):
         raise NotImplementedError
 
-    def output_steps(self):
-        raise NotImplementedError
 
 
 class QuickSort(Sort):
@@ -320,8 +239,6 @@ class QuickSort(Sort):
         self._frames = []
         self.sort_array(to_sort)
 
-        if display_text_steps:
-            self.output_steps(speed)
 
     def sort_array(self, arr: List[int]):
 
@@ -330,13 +247,13 @@ class QuickSort(Sort):
     def _quick_sort(self, arr: List[int], lo: int, hi: int, level: int = 1):
 
         if lo < hi:
-            print(arr, arr[lo:hi + 1], lo, hi, "Sorting at level", level)
+
             part = self._partition(arr, lo, hi)
-            print("Partition is", part)
+
 
             self._quick_sort(arr, lo, part - 1, level + 1)
             self._quick_sort(arr, part + 1, hi, level + 1)
-            print(arr, lo, hi, "Finished sorting at level", level)
+
 
     def _partition(self, arr: List[int], lo: int, hi: int) -> int:
         """
@@ -361,8 +278,6 @@ class QuickSort(Sort):
         self._frames.append(arr[:])
         return ind
 
-    def output_steps(self, delay: int = 2):
-        pass
 
 
 class CountingSort(Sort):
@@ -375,6 +290,4 @@ class CountingSort(Sort):
     def sort_array(self, arr: List[int]):
         raise NotImplementedError
 
-    def output_steps(self):
-        raise NotImplementedError
 
