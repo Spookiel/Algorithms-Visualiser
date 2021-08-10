@@ -5,7 +5,8 @@ from typing import List, Tuple
 import time
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-
+import numpy as np
+import  os
 
 class Sort(ABC):
     SMALL_SORT = 8
@@ -20,7 +21,7 @@ class Sort(ABC):
     FAST_ANIM = 0.05
     INSTA_ANIM = 0
     ANIM_SPEEDS = [SLOW_ANIM, MED_ANIM, FAST_ANIM, INSTA_ANIM]
-    MATPLOT_INTERVALS = [500, 250, 10, 1]
+    MATPLOT_INTERVALS = [250, 100, 10, 1]
 
     def __init__(self):
         self._steps: List[Tuple[str, List[int]]] = []
@@ -45,22 +46,25 @@ class Sort(ABC):
 
             #if bar.get_height() != val:
             bar.set_height(val)
+            #print(self.col_look[val-1])
+            bar.set_color(self.col_look[val-1])
         self.its += 1
         self.__text.set_text("# of operations: {}".format(self.its))
         self.__text2.set_text(f"Time elapsed: {round(time.time()-self._anim_start,3)}")
         # Add code to increment #iterations and draw them
         # Add code to change the colour of all bars which need to be highlighted
 
-    def show_animation(self) -> None:
+    def show_animation(self, save=False) -> None:
         """
         Generates a matplotlib animation for the given set of frames
 
         :param frames:
         :return None:
         """
-
+        cmap = plt.get_cmap("winter")
         assert len(self.frames) > 0
         print(len(self.frames))
+
         fig, ax = plt.subplots()
 
         plt.yticks([])
@@ -69,10 +73,15 @@ class Sort(ABC):
 
         arr = next(frames_gen)
 
-        bars = ax.bar(range(len(arr)), arr, align="edge")
+        rescale = lambda y: 1-((y - np.min(y)) / (np.max(y) - np.min(y)))
+
+        self.col_look = cmap(rescale(sorted(arr)))
+
+        bars = ax.bar(range(len(arr)), arr, align="edge", color=self.col_look, alpha=0.8)
 
         ax.set_xlim(0, len(arr))
         ax.set_ylim(0, len(arr)*1.15)
+
         self.__text = ax.text(0.02, 0.95, "", transform=ax.transAxes, fontfamily="serif")
         self.__text2 = ax.text(0.02, 0.90, "", transform=ax.transAxes, fontfamily="serif")
         # Calculate interval based on number of frames
@@ -86,10 +95,20 @@ class Sort(ABC):
             interval = Sort.MATPLOT_INTERVALS[2]
         elif len(self.frames) > 200:
             interval = Sort.MATPLOT_INTERVALS[3]
-        self._anim_start = time.time()
-        anim = animation.FuncAnimation(fig, func=self.update_fig, fargs=(bars,0), frames=frames_gen,
-                                       interval=interval, repeat=False)
 
+
+        self._anim_start = time.time()
+
+
+        anim = animation.FuncAnimation(fig, func=self.update_fig, fargs=(bars, 0), frames=frames_gen,
+                                       interval=interval, repeat=False, save_count=len(self.frames))
+
+        if save:
+            fpath = os.path.join(os.getcwd(), "animations", "test.gif")
+            print(f"Saving to file location {fpath}")
+            gifwriter = animation.PillowWriter(fps=60)
+
+            anim.save(fpath, writer=gifwriter)
         plt.show()
 
     @staticmethod
@@ -104,7 +123,7 @@ class Sort(ABC):
     def frames(self):
         return self._frames
 
-
+# Re-write merge sort as in place sorting
 class MergeSort(Sort):
 
     def __init__(self):
@@ -115,7 +134,7 @@ class MergeSort(Sort):
 
         self._steps: List[Tuple[str, List[int]]] = []  # Resets after each sort
         self._totalComparisons: int = 0
-
+        self._frames = []
         to_sort: List[int] = Sort.generate_array(Sort.SORT_SIZES[size])
 
         self.sort_array(to_sort)
@@ -216,6 +235,8 @@ class BubbleSort(Sort):
 
         to_sort = Sort.generate_array(Sort.SORT_SIZES[size])
 
+        self._frames = []
+
         self.sort_array(to_sort)
 
         if display_text_steps:
@@ -296,7 +317,7 @@ class QuickSort(Sort):
         self._iterations = 0
 
         to_sort = Sort.generate_array(Sort.SORT_SIZES[size])
-
+        self._frames = []
         self.sort_array(to_sort)
 
         if display_text_steps:
