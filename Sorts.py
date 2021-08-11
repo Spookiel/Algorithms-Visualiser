@@ -10,8 +10,8 @@ import  os
 
 class Sort(ABC):
     SMALL_SORT = 8
-    MED_SORT = 15
-    LARGE_SORT = 25
+    MED_SORT = 25
+    LARGE_SORT = 50
     EXTREME_SORT = 150
     SORT_SIZES = [SMALL_SORT, MED_SORT, LARGE_SORT, EXTREME_SORT]
     NUM_SIZES = 5
@@ -36,7 +36,7 @@ class Sort(ABC):
 
 
     @abstractmethod
-    def sort_array(self, arr: List[int]):
+    def sort_array(self, arr: List[int], *args, **kwargs):
         raise NotImplementedError
     
     @abstractmethod
@@ -155,13 +155,13 @@ class Sort(ABC):
     def generate(upto: int, gen_type: int = 0):
         
         if gen_type==0:
-            print("here0")
+
             return Sort.generate_uni_array(upto)
         elif gen_type==1:
-            print("here1")
+
             return Sort.generate_rand_array(upto)
         elif gen_type==2:
-            print("here2")
+
             return Sort.generate_high_freq_array(upto)
 
     @property
@@ -186,47 +186,9 @@ class MergeSort(Sort):
 
         self.sort_array(to_sort)
 
-    def sort_array(self, arr: List[int], level: int = 1) -> List[int]:
+    def sort_array(self, arr: List[int], start, mid, end):
 
-        mid = len(arr) // 2
-
-        left_arr = arr[:mid]
-        right_arr = arr[mid:]
-
-
-        if len(left_arr) > 2:
-            left_arr = self.sort_array(left_arr, level + 1)
-
-        else:
-
-            if len(left_arr) == 2:
-                self._totalComparisons += 1
-
-                if left_arr[0] > left_arr[1]:
-                    left_arr = left_arr[::-1]
-
-        if len(right_arr) > 2:
-            right_arr = self.sort_array(right_arr, level + 1)
-        else:
-            if len(right_arr) == 2:
-                self._totalComparisons += 1
-                if right_arr[0] > right_arr[1]:
-                    right_arr = right_arr[::-1]
-
-        # Knowing that the two lists are sorted, we can run through the two arrays using separate pointers
-
-        merged = []
-        while left_arr and right_arr:
-            if left_arr[0] <= right_arr[0]:
-                merged.append(left_arr.pop(0))
-            else:
-                merged.append(right_arr.pop(0))
-            self._totalComparisons += 1
-
-        merged.extend(left_arr)
-        merged.extend(right_arr)
-
-        return merged
+        right_start = mid+1
 
 
 
