@@ -208,7 +208,7 @@ class MergeSort(Sort):
         if arr[mid] <= arr[right_start]:
             return
 
-        while start < mid and right_start < end:
+        while start <= mid and right_start <= end:
 
             if arr[start] <= arr[right_start]:
                 start += 1
