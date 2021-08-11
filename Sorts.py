@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import numpy as np
 import  os
+import sys
+sys.setrecursionlimit(10000)
 
 class Sort(ABC):
     SMALL_SORT = 8
@@ -36,7 +38,7 @@ class Sort(ABC):
 
 
     @abstractmethod
-    def sort_array(self, arr: List[int], *args, **kwargs):
+    def sort_array(self, arr: List[int]):
         raise NotImplementedError
     
     @abstractmethod
@@ -184,11 +186,45 @@ class MergeSort(Sort):
         self._frames = []
         to_sort: List[int] = Sort.generate(Sort.SORT_SIZES[size], gen_type)
 
-        self.sort_array(to_sort)
+        self.sort_array(to_sort,0, len(to_sort)-1)
 
-    def sort_array(self, arr: List[int], start, mid, end):
+    def sort_array(self, arr: List[int], l: int , r: int):
+
+        if r == -5:
+            r = len(arr)
+
+        if l < r:
+            mid = l + (r - l) // 2
+
+            self.sort_array(arr, l, mid)
+            self.sort_array(arr, mid+1, r)
+            self.merge_array(arr, l, mid, r)
+            self._frames.append(arr[:])
+
+    def merge_array(self, arr: List[int], start, mid, end):
 
         right_start = mid+1
+
+        if arr[mid] <= arr[right_start]:
+            return
+
+        while start < mid and right_start < end:
+
+            if arr[start] <= arr[right_start]:
+                start += 1
+            else:
+                val = arr[right_start]
+                ind = int(right_start)
+
+                while ind != start:
+                    arr[ind] = arr[ind-1]
+                    ind -= 1
+                arr[start] = val
+                self._frames.append(arr[:])
+
+                start += 1
+                mid += 1
+                right_start += 1
 
 
 
