@@ -30,7 +30,6 @@ class Sorter:
         print("First argument: Type of sort (Case insensitive)")
         print("b: Bubble Sort", "m: Merge Sort")
         print("q: Quick Sort", "r: Radix Sort")
-        print("c: Counting Sort")
         print("back: To return to main menu")
         print("-"*40)
         print("Second argument: Array size (Case insensitive)")
@@ -114,7 +113,7 @@ class Sorter:
 
         if len(converted) == 1:
 
-            converted.extend([Sorter.DEFAULT_SIZE, Sorter.DEFAULT_ANIM]) # Defaults for missing args
+            converted.extend([Sorter.DEFAULT_SIZE, Sorter.DEFAULT_SORT_TYPE]) # Defaults for missing args
         elif len(converted) == 2:
 
             converted[1] = size_lookup[converted[1]]

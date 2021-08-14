@@ -6,6 +6,7 @@ import time
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import numpy as np
+from math import log10
 import  os
 import sys
 sys.setrecursionlimit(10000)
@@ -23,7 +24,7 @@ class Sort(ABC):
     FAST_ANIM = 0.05
     INSTA_ANIM = 0
     ANIM_SPEEDS = [SLOW_ANIM, MED_ANIM, FAST_ANIM, INSTA_ANIM]
-    MATPLOT_INTERVALS = [250, 100, 30, 10]
+    MATPLOT_INTERVALS = [2000, 250, 30, 10]
 
     HIGH_FREQ_BARS = 7
 
@@ -42,7 +43,7 @@ class Sort(ABC):
         raise NotImplementedError
     
     @abstractmethod
-    def process_sort(self, size: int = 1, gen_type: int = 0) -> None:
+    def process_sort(self, size: int = 1, gen_type: int = 0, upto: int = -1) -> None:
         raise NotImplementedError
 
     def update_fig(self, arr: List[int], bars, comps):
@@ -50,8 +51,12 @@ class Sort(ABC):
         for bar, val in zip(bars, arr):
 
             bar.set_height(val)
+            #print(self.col_look[ind])
 
-            bar.set_color(self.col_look[val-1])
+            if val != 0:
+                #print(val, self.val_ind_look[val])
+                bar.set_color(self.col_look[self.val_ind_look[val]])
+                #bar.set_color(self.col_look[val-1])
 
 
         self.its += 1
@@ -86,7 +91,7 @@ class Sort(ABC):
         plt.yticks([])
         plt.xticks([])
         self.its = 0
-        frames_gen = (f for f in self.frames)
+        frames_gen = (f for ind,f in enumerate(self.frames) if ind%1==0)
 
         arr = next(frames_gen)
 
@@ -94,10 +99,15 @@ class Sort(ABC):
         bars = ax.bar(range(len(arr)), arr, align="edge", color=self.col_look, alpha=0.88, width=1.0)
 
         self.col_look = cmap(Sort.rescale(sorted(arr)))
+        self.val_ind_look = {}
+
+        so = sorted(arr)
+        for ind, val in enumerate(so):
+            self.val_ind_look[val] = ind
 
 
         ax.set_xlim(0, len(arr))
-        ax.set_ylim(0, len(arr)*1.15)
+        ax.set_ylim(0, max(arr)*1.15)
 
         self.__iterations_text = ax.text(0.02, 0.95, "", transform=ax.transAxes, fontfamily="serif")
         self.__timer_text = ax.text(0.02, 0.90, "", transform=ax.transAxes, fontfamily="serif")
@@ -106,7 +116,7 @@ class Sort(ABC):
         interval: int = 10   # Delay between frames in ms
         if len(self.frames) < 20:
             interval = Sort.MATPLOT_INTERVALS[0]
-        elif len(self.frames) < 100:
+        elif len(self.frames) < 50:
             interval = Sort.MATPLOT_INTERVALS[1]
         elif len(self.frames) < 200:
             interval = Sort.MATPLOT_INTERVALS[2]
@@ -128,17 +138,17 @@ class Sort(ABC):
         plt.show()
 
     @staticmethod
-    def generate_uni_array(upto: int) -> List[int]:
-        nums = [i+1 for i in range(upto)]
+    def generate_uni_array(size: int, upto: int) -> List[int]:
+        nums = [i+1 for i in range(size)]
 
         random.shuffle(nums)
 
         return nums
 
     @staticmethod
-    def generate_rand_array(upto: int) -> List[int]:
+    def generate_rand_array(size: int, upto: int) -> List[int]:
 
-        nums = [random.randint(1, upto) for _ in range(upto)]
+        nums = [random.randint(1, upto) for _ in range(size)]
 
         return nums
 
@@ -154,14 +164,18 @@ class Sort(ABC):
         return nums
     
     @staticmethod
-    def generate(upto: int, gen_type: int = 0):
+    def generate(size: int, upto: int = -1, gen_type: int = 0):
+        
+        if upto==-1:
+            upto = int(size)
+        
         
         if gen_type==0:
 
-            return Sort.generate_uni_array(upto)
+            return Sort.generate_uni_array(size,upto)
         elif gen_type==1:
 
-            return Sort.generate_rand_array(upto)
+            return Sort.generate_rand_array(size,upto)
         elif gen_type==2:
 
             return Sort.generate_high_freq_array(upto)
@@ -179,12 +193,15 @@ class MergeSort(Sort):
 
         super().__init__()
 
-    def process_sort(self, size: int = 1, gen_type: int = 0) -> None:
+    def process_sort(self, size: int = 1, gen_type: int = 0, upto: int = -1) -> None:
 
         self._steps: List[Tuple[str, List[int]]] = []  # Resets after each sort
         self._totalComparisons: int = 0
         self._frames = []
-        to_sort: List[int] = Sort.generate(Sort.SORT_SIZES[size], gen_type)
+        if upto == -1:
+            upto = Sort.SORT_SIZES[size]
+
+        to_sort: List[int] = Sort.generate(Sort.SORT_SIZES[size], upto, gen_type)
 
         self.sort_array(to_sort,0, len(to_sort)-1)
 
@@ -236,10 +253,13 @@ class BubbleSort(Sort):
         self._steps: List[str] = []
         self._iterations = 0
 
-    def process_sort(self, size: int = 1, gen_type: int = 0) -> None:
+    def process_sort(self, size: int = 1, gen_type: int = 0, upto: int = -1) -> None:
         self._iterations = 0
 
-        to_sort = Sort.generate(Sort.SORT_SIZES[size], gen_type)
+        if upto == -1:
+            upto = Sort.SORT_SIZES[size]
+
+        to_sort = Sort.generate(Sort.SORT_SIZES[size], upto, gen_type)
 
         self._frames = []
 
@@ -270,11 +290,15 @@ class QuickSort(Sort):
     def __init__(self):
         super().__init__()
 
-    def process_sort(self, size: int = 1, gen_type: int = 0) -> None:
+    def process_sort(self, size: int = 1, gen_type: int = 0, upto: int = -1) -> None:
         self._iterations = 0
 
-        to_sort = Sort.generate(Sort.SORT_SIZES[size], gen_type)
+
+        if upto == -1:
+            upto = Sort.SORT_SIZES[size]
+        to_sort = Sort.generate(Sort.SORT_SIZES[size], upto, gen_type)
         self._frames = []
+        print(to_sort, size, gen_type, upto)
         self.sort_array(to_sort)
 
 
@@ -322,16 +346,75 @@ class RadixSort(Sort):
     def __init__(self):
         super().__init__()
 
-    def process_sort(self, size: int = 1, gen_type: int = 0):
-        raise NotImplementedError
+    def process_sort(self, size: int = 1, gen_type: int = 0, upto: int = -1):
+
+        if upto == -1:
+            upto = Sort.SORT_SIZES[size]
+
+        to_sort = Sort.generate(Sort.SORT_SIZES[size], upto, gen_type)
+        print(to_sort)
+        self._frames = []
+        self.sort_array(to_sort)
 
     def sort_array(self, arr: List[int]):
-        raise NotImplementedError
+
+        large = max(arr)
+        exp = 1
 
 
-    def count_sort(self, arr):
+        self._frames.append(arr)
+        while exp <= large:
+            arr = self.count_sort(arr, exp)
+            #print(arr, "AFTER")
+
+            self._frames.append(arr[:])
+            exp *= 10
+
+
+    def count_sort(self, arr, exp):
 
         N = len(arr)
 
 
 
+        output = [0]*N
+        count = [0]*10
+
+
+        # Count occurences
+
+        for val in arr:
+            dig = (val/exp)
+            count[int(dig%10)] += 1
+
+        # Prefix sum bit
+
+        for i in range(1,len(count)):
+            count[i] += count[i-1]
+
+        count = [0]+count[:-1]
+
+
+
+        for j in range(0, len(arr)):
+            ke = int(arr[j]/exp)
+            output[count[ke%10]] = arr[j]
+            self._frames.append(output[:])
+            count[ke%10] += 1
+
+
+        return output
+
+
+
+
+
+r = RadixSort()
+r.process_sort(3, 1, 1000000000)
+
+r.show_animation()
+"""
+q = QuickSort()
+q.process_sort(3,1)
+q.show_animation()
+"""
