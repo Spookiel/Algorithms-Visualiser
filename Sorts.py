@@ -377,8 +377,8 @@ class RadixSort(Sort):
 
 
 
-        output = [0]*N
-        count = [0]*10
+        output = [0 for _ in range(N)]
+        count = [0 for _ in range(10)]
 
 
         # Count occurences
