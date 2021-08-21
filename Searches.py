@@ -12,6 +12,10 @@ class Search:
 
     def __init__(self):
         self._curGrid = []
+        self._pathSteps = []
+        self._steps = []
+        self.__finalDist = 0
+        self.__checked = 0
 
     @staticmethod
     def locate_start(grid) -> Tuple[int, int]:
@@ -45,14 +49,55 @@ class Search:
         if self.checkLim(node):
             return self._curGrid[node[1]][node[0]]
 
+
+
+    def outputSteps(self):
+
+        for step in self._steps:
+            time.sleep(0.8)
+            for row in step:
+                print(*row)
+            print("-"*40)
+
+
+
+
+
+    def __tracePath(self):
+
+        self.path = [self.end]
+        while self.path[-1] != self.start:
+            self.path.append(self.parents[self.path[-1]])
+
+        self.path = self.path[::-1]
+        self.path.pop(0)
+        self.path.pop(-1)
+    def __storePath(self):
+
+        for loc in self.path:
+            self._curGrid[loc[1]][loc[0]] = colored(GridCreator.TILE, "grey")
+
+            self._pathSteps.append(deepcopy(self._curGrid))
+
+    def __outputPath(self):
+
+        for step in self._pathSteps:
+            print("-"*40)
+            time.sleep(0.5)
+            for row in step:
+                print(*row)
+
+
+
+    def show_animation(self):
+        raise NotImplementedError
+        # Function to draw a matplotlib figure similar to that of the sorting algorithms
+
 class BFS(Search):
 
     def __init__(self):
         super().__init__()
-        self._pathSteps = []
-        self._steps = []
-        self.__finalDist = 0
-        self.__checked = 0
+
 
 
 
@@ -135,38 +180,7 @@ class BFS(Search):
         self.__checked = len(seen)
 
 
-    def outputSteps(self):
 
-        for step in self._steps:
-            time.sleep(0.8)
-            for row in step:
-                print(*row)
-            print("-"*40)
-
-
-    def __tracePath(self):
-
-        self.path = [self.end]
-        while self.path[-1] != self.start:
-            self.path.append(self.parents[self.path[-1]])
-
-        self.path = self.path[::-1]
-        self.path.pop(0)
-        self.path.pop(-1)
-    def __storePath(self):
-
-        for loc in self.path:
-            self._curGrid[loc[1]][loc[0]] = colored(GridCreator.TILE, "grey")
-
-            self._pathSteps.append(deepcopy(self._curGrid))
-
-    def __outputPath(self):
-
-        for step in self._pathSteps:
-            print("-"*40)
-            time.sleep(0.5)
-            for row in step:
-                print(*row)
 
 
 
