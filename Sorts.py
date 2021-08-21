@@ -408,11 +408,6 @@ class RadixSort(Sort):
 
 
 
-
-r = RadixSort()
-r.process_sort(3, 1, 1000000000)
-
-r.show_animation()
 """
 q = QuickSort()
 q.process_sort(3,1)

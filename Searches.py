@@ -45,6 +45,27 @@ class Search:
         if self.checkLim(node):
             return self._curGrid[node[1]][node[0]]
 
+    def adj4_gen(self, px, py):
+
+        for dx, dy in Search.adj4:
+            nx, ny = dx + px, dy + py
+
+            if self.checkLim((nx, ny)):
+                yield nx, ny
+            else:
+                raise ValueError(f"Grid coordinate {nx}, {ny} is out of range for board size {len(self._curGrid)}")
+
+    def adj8_gen(self, px, py):
+
+
+        for dx, dy in Search.adj8:
+            nx, ny = dx + px, dy + py
+
+            if self.checkLim((nx, ny)):
+                yield nx, ny
+            else:
+                raise ValueError(f"Grid coordinate {nx}, {ny} is out of range for board size {len(self._curGrid)}")
+
 class BFS(Search):
 
     def __init__(self):
@@ -115,12 +136,9 @@ class BFS(Search):
 
             # Go to adjacent nodes
 
-            for dx, dy in Search.adj4:
-                nx, ny = next_node[0]+dx, next_node[1]+dy
-                
-                adj_node: Tuple[int, int] = (nx, ny)
+            for adj_node in Search.adj4_gen(*next_node): # Generator checks point is in limit
 
-                if self.checkLim(adj_node) and adj_node not in seen and "#" not in self.getVal(adj_node):
+                if adj_node not in seen and "#" not in self.getVal(adj_node):
                     # New node is inside grid, and is not a barrier
                     seen.add(adj_node)
                     self.parents[adj_node] = next_node
