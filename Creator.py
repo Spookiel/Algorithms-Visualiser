@@ -32,6 +32,7 @@ class GridCreator():
     TILE = "0"
     STILE = "S"
     ETILE = "E"
+    BARRIER_TILE = "#"
     DRAW_PROB = 0.5
 
     def __init__(self) -> None:
@@ -46,7 +47,7 @@ class GridCreator():
         col: int = top_left[1]
         for rrow in range(row, row + ob_size):
             for ccol in range(col, col + ob_size):
-                self._grid[rrow][ccol] = colored("#", "red")
+                self._grid[rrow][ccol] = colored(GridCreator.BARRIER_TILE, "red")
 
 
     def generate_grid(self, size:int = 1) -> List[List[str]]:

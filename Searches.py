@@ -41,7 +41,7 @@ class Search:
 
 
 
-    def checkLim(self,node: Tuple[int, int]) -> bool:
+    def checkLim(self, node: Tuple[int, int]) -> bool:
         # Checks if a node is on the grid or not
         return 0 <= node[0] < len(self._curGrid) and 0 <= node[1] < len(self._curGrid)
 
@@ -63,7 +63,7 @@ class Search:
 
 
 
-    def __tracePath(self):
+    def _tracePath(self):
 
         self.path = [self.end]
         while self.path[-1] != self.start:
@@ -72,14 +72,16 @@ class Search:
         self.path = self.path[::-1]
         self.path.pop(0)
         self.path.pop(-1)
-    def __storePath(self):
+
+
+    def _storePath(self):
 
         for loc in self.path:
             self._curGrid[loc[1]][loc[0]] = colored(GridCreator.TILE, "grey")
 
             self._pathSteps.append(deepcopy(self._curGrid))
 
-    def __outputPath(self):
+    def _outputPath(self):
 
         for step in self._pathSteps:
             print("-"*40)
@@ -93,6 +95,17 @@ class Search:
         raise NotImplementedError
         # Function to draw a matplotlib figure similar to that of the sorting algorithms
 
+
+    def adj4_gen(self, px: int, py: int) -> Tuple[int, int]:
+
+        for dx, dy in Search.adj4:
+            nx: int = px+dx
+            ny: int = py+dy
+
+            assert len(self._curGrid) > 0
+            if self.checkLim((nx, ny)):
+                yield (nx, ny)
+
 class BFS(Search):
 
     def __init__(self):
@@ -101,7 +114,7 @@ class BFS(Search):
 
 
 
-    def process_search(self, grid):
+    def process_search(self, grid: List[List]) -> None:
         self._curGrid = grid
         self._pathSteps = []
         self._steps = []
@@ -110,17 +123,37 @@ class BFS(Search):
         self.outputSteps()
         self.__process_path()
 
+        self.outputSearchInfo()
+
+
+    def __process_path(self) -> None:
+        self._tracePath()
+        self._storePath()
+        self._outputPath()
+
+
+
+    def outputSearchInfo(self):
         print("-"*5, "Search information", "-"*5)
         print(f"Distance: {self.__finalDist}")
         print(f"Tiles checked: {self.__checked}")
         print(f"Board size: {len(self._curGrid)}x{len(self._curGrid)}")
 
 
-    def __process_path(self):
-        self.__tracePath()
-        self.__storePath()
-        self.__outputPath()
+    def _colourMainTiles(self, next_node: Tuple[int, int], val_at: str):
+        if GridCreator.STILE not in val_at and GridCreator.ETILE not in val_at:
+            # Not a start or end point so should colour green
+            self._curGrid[next_node[1]][next_node[0]] = colored(GridCreator.TILE, "green")
 
+
+    def updateIfDistChange(self, dist: int, last_dist: int) -> int:
+        if last_dist != dist:
+            cop_grid = []
+            for row in self._curGrid:
+                cop_grid.append(row[:])
+            self._steps.append(cop_grid)
+
+            return int(dist) # Careful of copying errors
 
     def bfs(self):
         # Generates a sequence of colored grids,
@@ -139,33 +172,24 @@ class BFS(Search):
 
             val_at = self.getVal(next_node)
 
-            if last_dist != dist:
-                # Record grid state and update last dist
-                last_dist = int(dist) # Careful of copying errors
-
-                copGrid = []
-                for row in self._curGrid:
-                    copGrid.append(row[:])
-                self._steps.append(copGrid)
+            # Record grid state and update last dist
+            last_dist = self.updateIfDistChange(dist, last_dist)
 
             # Colour green because have been searched
-            if GridCreator.STILE not in val_at and GridCreator.ETILE not in val_at:
-                # Not a start or end point so should colour green
-                self._curGrid[next_node[1]][next_node[0]] = colored(GridCreator.TILE, "green")
+            self._colourMainTiles(next_node, val_at)
 
             if GridCreator.ETILE in val_at:
                 # Reached end so stop
                 self.__finalDist = dist
                 break
 
-            # Go to adjacent nodes
 
-            for dx, dy in Search.adj4:
-                nx, ny = next_node[0]+dx, next_node[1]+dy
-                
-                adj_node: Tuple[int, int] = (nx, ny)
+            adj_node: Tuple[int, int]
+            for adj_node in self.adj4_gen(next_node[0], next_node[1]):
 
-                if self.checkLim(adj_node) and adj_node not in seen and "#" not in self.getVal(adj_node):
+                # Limits checked inside generator function above
+
+                if adj_node not in seen and GridCreator.BARRIER_TILE not in self.getVal(adj_node):
                     # New node is inside grid, and is not a barrier
                     seen.add(adj_node)
                     self.parents[adj_node] = next_node
@@ -239,11 +263,10 @@ class AStar(Search):
 
 
 
-"""
+
 tc = GridCreator()
 
-grid = tc.generate_grid(10)
+grid = tc.generate_grid(0)
 tb = BFS()
 
-tb.process_search(grid)"""
-
+tb.process_search(grid)
