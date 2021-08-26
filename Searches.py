@@ -104,7 +104,17 @@ class Search:
 
             assert len(self._curGrid) > 0
             if self.checkLim((nx, ny)):
-                yield (nx, ny)
+                yield nx, ny
+
+    def adj8_gen(self, px: int, py: int) -> Tuple[int, int]:
+
+        for dx, dy in Search.adj8:
+            nx: int = px+dx
+            ny: int = py+dy
+
+            assert len(self._curGrid) > 0
+            if self.checkLim((nx, ny)):
+                yield nx, ny
 
 class BFS(Search):
 
@@ -246,20 +256,11 @@ class AStar(Search):
                 print(*row)
             print("-"*40)
 
+    def __process_path(self) -> None:
+        self._tracePath()
+        self._storePath()
+        self._outputPath()
 
-    def __process_path(self):
-        self.__tracePath()
-        self.__storePath()
-        self.__outputPath()
-
-    def __tracePath(self):
-        raise NotImplementedError
-
-    def __storePath(self):
-        raise NotImplementedError
-
-    def __outputPath(self):
-        raise NotImplementedError
 
 
 
