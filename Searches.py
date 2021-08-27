@@ -61,13 +61,13 @@ class Search:
 
     def extract_cell(self, string):
 
-        SPEC_ORDER = GridCreator.TILES
+        SPEC_ORDER = GridCreator.TILES[:]
         SPEC_ORDER.remove(GridCreator.TILE)
         SPEC_ORDER.append(GridCreator.TILE)
 
         # Move 0 to end because it is a special character
 
-        for tile in GridCreator.TILES:
+        for tile in SPEC_ORDER:
             if tile in string:
 
                 return tile
@@ -123,7 +123,7 @@ class Search:
 
 
 
-    def gen_matplotlib_start_grid(self):
+    def gen_matplotlib_start_grid(self, display: bool = False):
         # Should be called before any frames are generated for the text animation option
         # Eg there should be no colour on the grid
         mat_grid = [[] for _ in range(len(self._curGrid))]
@@ -132,8 +132,8 @@ class Search:
 
                     mat_grid[row].append(self._cell_to_col[self.extract_cell(self._curGrid[row][col])])
 
-
-        self.test_cmap(mat_grid)
+        if display:
+            self.test_cmap(mat_grid)
 
 
 
@@ -272,7 +272,7 @@ class BFS(Search):
         self.start: Tuple[int, int] = self.locate_start(self._curGrid)
         self.end: Tuple[int, int] = self.locate_end(self._curGrid)
 
-        tb.gen_matplotlib_start_grid()
+        tb.gen_matplotlib_start_grid(display=False)
 
         self._pathSteps = []
         queue = [(self.start, 0)]  # (Node, distance)
@@ -374,4 +374,6 @@ grid = tc.generate_grid(2)
 tb = BFS()
 
 tb.process_search(grid, False)
+
+tb.test_2d_animation(50)
 
