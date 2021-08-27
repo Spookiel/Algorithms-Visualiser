@@ -33,6 +33,7 @@ class GridCreator():
     STILE = "S"
     ETILE = "E"
     BARRIER_TILE = "#"
+    TILES = [TILE, STILE, ETILE, BARRIER_TILE]
     DRAW_PROB = 0.5
 
     def __init__(self) -> None:

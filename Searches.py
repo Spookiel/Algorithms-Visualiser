@@ -22,6 +22,7 @@ class Search:
         self.__checked = 0
         self._frames = []
 
+        self._cell_to_col = {GridCreator.BARRIER_TILE:4, GridCreator.TILE: 0, GridCreator.ETILE:1, GridCreator.STILE: 1}
         # Start and end tiles are Grey
         # Searching are yellow
         # Searched are green
@@ -29,7 +30,7 @@ class Search:
         # Obstacles are red
         GREY = '0.5'
         WHITE = '1'
-        self.__col_list = [WHITE, GREY, "y", "g", "b", "r"]
+        self.__col_list = [WHITE, GREY, "b", "g","r"]
 
 
         self.__cmap = colors.ListedColormap(self.__col_list)
@@ -57,6 +58,19 @@ class Search:
         print("END POINT NOT DEFINED, USING BOTTOM RIGHT CORNER")
         return len(grid) - 1, len(grid) - 1
 
+
+    def extract_cell(self, string):
+
+        SPEC_ORDER = GridCreator.TILES
+        SPEC_ORDER.remove(GridCreator.TILE)
+        SPEC_ORDER.append(GridCreator.TILE)
+
+        # Move 0 to end because it is a special character
+
+        for tile in GridCreator.TILES:
+            if tile in string:
+
+                return tile
 
 
     def checkLim(self, node: Tuple[int, int]) -> bool:
@@ -109,6 +123,25 @@ class Search:
 
 
 
+    def gen_matplotlib_start_grid(self):
+        # Should be called before any frames are generated for the text animation option
+        # Eg there should be no colour on the grid
+        mat_grid = [[] for _ in range(len(self._curGrid))]
+        for row in range(len(self._curGrid)):
+            for col in range(len(self._curGrid)):
+
+                    mat_grid[row].append(self._cell_to_col[self.extract_cell(self._curGrid[row][col])])
+
+
+        self.test_cmap(mat_grid)
+
+
+
+
+
+
+
+
     def show_animation(self):
 
         if not self._frames:
@@ -134,7 +167,6 @@ class Search:
         for dx, dy in Search.adj8:
             nx: int = px+dx
             ny: int = py+dy
-
             assert len(self._curGrid) > 0
             if self.checkLim((nx, ny)):
                 yield nx, ny
@@ -147,12 +179,12 @@ class Search:
 
         return [[random.randint(0, len(self.__col_list)) for _ in range(size)] for _ in range(size)]
 
-    def test_cmap(self):
+    def test_cmap(self, arr=None):
 
+        if arr is None:
+            arr = self.test_rand_gen(20)
 
-        rn = self.test_rand_gen(20)
-
-        plt.imshow(rn, cmap=self.__cmap, interpolation="nearest")
+        plt.pcolormesh(arr, cmap=self.__cmap, edgecolors="k", linewidth=0.01)
         plt.show()
 
 
@@ -239,9 +271,15 @@ class BFS(Search):
         last_dist: int = 0
         self.start: Tuple[int, int] = self.locate_start(self._curGrid)
         self.end: Tuple[int, int] = self.locate_end(self._curGrid)
+
+        tb.gen_matplotlib_start_grid()
+
         self._pathSteps = []
         queue = [(self.start, 0)]  # (Node, distance)
         seen.add(self.start)
+
+
+
         while queue:
             next_node, dist = queue.pop(0)
 
@@ -332,9 +370,8 @@ class AStar(Search):
 
 tc = GridCreator()
 
-grid = tc.generate_grid(0)
+grid = tc.generate_grid(2)
 tb = BFS()
 
 tb.process_search(grid, False)
 
-tb.test_2d_animation(50)
