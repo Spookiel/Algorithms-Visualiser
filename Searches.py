@@ -3,6 +3,10 @@ from typing import Tuple,List
 from Creator import GridCreator
 from termcolor import colored
 import time
+import matplotlib.pyplot as plt
+from matplotlib import colors
+import matplotlib.animation
+import random
 import heapq as hp
 
 class Search:
@@ -16,6 +20,20 @@ class Search:
         self._steps = []
         self.__finalDist = 0
         self.__checked = 0
+        self._frames = []
+
+        # Start and end tiles are Grey
+        # Searching are yellow
+        # Searched are green
+        # End points are blue
+        # Obstacles are red
+        GREY = '0.5'
+        WHITE = '1'
+        self.__col_list = [WHITE, GREY, "y", "g", "b", "r"]
+
+
+        self.__cmap = colors.ListedColormap(self.__col_list)
+
 
     @staticmethod
     def locate_start(grid) -> Tuple[int, int]:
@@ -92,7 +110,12 @@ class Search:
 
 
     def show_animation(self):
-        raise NotImplementedError
+
+        if not self._frames:
+            raise Exception("No frames to draw!")
+
+
+
         # Function to draw a matplotlib figure similar to that of the sorting algorithms
 
 
@@ -116,6 +139,45 @@ class Search:
             if self.checkLim((nx, ny)):
                 yield nx, ny
 
+
+    def test_rand_gen(self, size: int = -1):
+
+        if size == -1:
+            size = len(self.__col_list)
+
+        return [[random.randint(0, len(self.__col_list)) for _ in range(size)] for _ in range(size)]
+
+    def test_cmap(self):
+
+
+        rn = self.test_rand_gen(20)
+
+        plt.imshow(rn, cmap=self.__cmap, interpolation="nearest")
+        plt.show()
+
+
+    def test_update_fig(self, a, size):
+
+        self.__im.set_array(self.test_rand_gen(size))
+
+        return [self.__im]
+
+
+    def test_2d_animation(self, size=10):
+
+        fig = plt.figure()
+        ax = plt.axes()
+
+        data = self.test_rand_gen(size)
+
+        self.__im = plt.imshow(data, cmap=self.__cmap, interpolation="nearest")
+
+
+        anim = matplotlib.animation.FuncAnimation(fig, self.test_update_fig, frames=10, interval=100, fargs = [size], blit=True)
+
+        plt.show()
+
+
 class BFS(Search):
 
     def __init__(self):
@@ -124,16 +186,19 @@ class BFS(Search):
 
 
 
-    def process_search(self, grid: List[List]) -> None:
+    def process_search(self, grid: List[List], display_text_steps: bool = True) -> None:
         self._curGrid = grid
         self._pathSteps = []
         self._steps = []
 
         self.bfs()
-        self.outputSteps()
-        self.__process_path()
 
-        self.outputSearchInfo()
+
+        if display_text_steps:
+            self.outputSteps()
+            self.__process_path()
+
+            self.outputSearchInfo()
 
 
     def __process_path(self) -> None:
@@ -270,4 +335,6 @@ tc = GridCreator()
 grid = tc.generate_grid(0)
 tb = BFS()
 
-tb.process_search(grid)
+tb.process_search(grid, False)
+
+tb.test_2d_animation(50)
