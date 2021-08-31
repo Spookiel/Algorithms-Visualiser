@@ -85,3 +85,5 @@ class Terminal(UI):
         print("4. Quit")
         print("-"*40)
 
+if __name__ == "__main__":
+    pass

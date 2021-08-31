@@ -135,3 +135,6 @@ class Simulator(ABC):
 
     def _convert_grid_solve_args(self, args):
         return 1
+
+if __name__ == "__main__":
+    pass

@@ -136,8 +136,8 @@ class GridCreator():
 
 
 
-"""
-tg = GridCreator()
+if __name__ == "__main__":
+    tg = GridCreator()
 
-tg.generate_grid(25)
-tg._print_grid()"""
+    tg.generate_grid(2)
+    tg._print_grid()

@@ -21,28 +21,38 @@ class Search:
         self.__finalDist = 0
         self.__checked = 0
         self._frames = []
+        self.parents = {}
 
 
+    @property
+    def start(self):
+        return self.__start
+
+    @property
+    def end(self):
+        return self.__end
 
 
-    @staticmethod
-    def locate_start(grid) -> Tuple[int, int]:
+    @start.setter
+    def start(self, grid) -> Tuple[int, int]:
         # "s" in colored("s", "blue") -> True
         # "s" == colored("s", "blue") -> False
         for y in range(len(grid)):
             for x in range(len(grid)):
                 if GridCreator.STILE in grid[y][x]:
+                    self.__start = x,y
                     return x, y
         print("START POINT NOT FOUND, USING TOP LEFT CORNER")
         return 0, 0
 
-    @staticmethod
-    def locate_end(grid) -> Tuple[int, int]:
+    @end.setter
+    def end(self, grid) -> Tuple[int, int]:
         # "e" in colored("e", "blue") -> True
         # "e" == colored("e", "blue") -> False
         for y in range(len(grid)):
             for x in range(len(grid)):
                 if GridCreator.ETILE in grid[y][x]:
+                    self.__end = x,y
                     return x, y
         print("END POINT NOT DEFINED, USING BOTTOM RIGHT CORNER")
         return len(grid) - 1, len(grid) - 1
@@ -55,7 +65,7 @@ class Search:
         # Checks if a node is on the grid or not
         return 0 <= node[0] < len(self._curGrid) and 0 <= node[1] < len(self._curGrid)
 
-    def getVal(self,node: Tuple[int, int]) -> str:
+    def getVal(self, node: Tuple[int, int]) -> str:
         if self.checkLim(node):
             return self._curGrid[node[1]][node[0]]
 
@@ -201,10 +211,11 @@ class BFS(Search):
         self.parents: dict = {}  # Stores parent node for each node so a path to start can be re-traced
         seen: set = set()
         last_dist: int = 0
-        self.start: Tuple[int, int] = self.locate_start(self._curGrid)
-        self.end: Tuple[int, int] = self.locate_end(self._curGrid)
 
-        tb.gen_matplotlib_start_grid(display=False)
+        self.start: Tuple[int, int] = self._curGrid # Goes through setter function
+        self.end: Tuple[int, int] = self._curGrid # Goes through setter function
+
+        #tb.gen_matplotlib_start_grid(display=False)
 
         self._pathSteps = []
         queue = [(self.start, 0)]  # (Node, distance)
@@ -262,6 +273,17 @@ class AStar(Search):
         self._steps = []
         self.__finalDist = 0
         self.__checked = 0
+        self.__end = None
+        self.__start = None
+
+
+    @property
+    def end(self):
+        return self.__end
+
+    @property
+    def start(self):
+        return self.__start
 
 
 
@@ -280,8 +302,19 @@ class AStar(Search):
         print(f"Board size: {len(self._curGrid)}x{len(self._curGrid)}")
 
 
-    def astar(self):
-        raise NotImplementedError
+    def astar(self) -> None:
+
+
+        queue = []
+        hp.heapify([])
+
+
+
+
+
+    def heuristic(self, point):
+        pass
+
 
     def outputSteps(self):
 
@@ -299,13 +332,12 @@ class AStar(Search):
 
 
 
+if __name__=="__main__":
+    tc = GridCreator()
 
-tc = GridCreator()
+    grid = tc.generate_grid(2)
+    tb = BFS()
 
-grid = tc.generate_grid(2)
-tb = BFS()
-
-tb.process_search(grid, False)
-
-tb.test_2d_animation(50)
+    tb.process_search(grid, False)
+    tb.outputSteps()
 

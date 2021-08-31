@@ -45,18 +45,9 @@ class GridSolver():
     def process_choice(self):
         raise NotImplementedError
 
-"""
-tc = GridCreator()
-grid = tc.generate_grid(30)
 
-
-ts = GridSolver()
-ts._curGrid = grid
+if __name__ == "__main__":
+        pass
 
 
 
-ts.bfs()
-ts.tracePath()
-ts.drawPath()
-ts.outputSteps()
-ts.outputPath()"""

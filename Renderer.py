@@ -4,6 +4,7 @@ import random
 from abc import ABC
 from Creator import GridCreator
 import numpy as np
+from Searches import BFS
 
 class Renderer(ABC):
     def __init__(self) -> None:
@@ -29,7 +30,7 @@ class SearchingRenderer(Renderer):
         GREY = '0.5'
         WHITE = '1'
         self.__col_list = [WHITE, GREY, "b", "g","r"]
-
+        self.__frames = []
         self.__cur_grid = None
         self.__cmap = matplotlib.colors.ListedColormap(self.__col_list)
     
@@ -39,6 +40,23 @@ class SearchingRenderer(Renderer):
         if self.__cur_grid is None:
             raise Exception("No grid found to operate on")
         return self.__cur_grid
+
+
+    @cur_grid.setter
+    def cur_grid(self, value):
+        self.__cur_grid = value
+
+
+
+    @property
+    def frames(self):
+        if not self.__frames:
+            raise Exception("Not enough frames to animate")
+        return self.__frames
+
+    @frames.setter
+    def frames(self, value):
+        self.__frames = value
 
 
     def test_rand_gen(self, size: int = -1):
@@ -105,6 +123,8 @@ class SearchingRenderer(Renderer):
                 return tile
 
 
-tr = SearchingRenderer()
-tr.test_2d_animation()
-#tr.test_cmap()
+
+if __name__ == "__main__":
+    tr = SearchingRenderer()
+
+    tr.test_2d_animation(size=5)
