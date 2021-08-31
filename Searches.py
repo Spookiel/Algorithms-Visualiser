@@ -22,18 +22,7 @@ class Search:
         self.__checked = 0
         self._frames = []
 
-        self._cell_to_col = {GridCreator.BARRIER_TILE:4, GridCreator.TILE: 0, GridCreator.ETILE:1, GridCreator.STILE: 1}
-        # Start and end tiles are Grey
-        # Searching are yellow
-        # Searched are green
-        # End points are blue
-        # Obstacles are red
-        GREY = '0.5'
-        WHITE = '1'
-        self.__col_list = [WHITE, GREY, "b", "g","r"]
 
-
-        self.__cmap = colors.ListedColormap(self.__col_list)
 
 
     @staticmethod
@@ -59,18 +48,7 @@ class Search:
         return len(grid) - 1, len(grid) - 1
 
 
-    def extract_cell(self, string):
 
-        SPEC_ORDER = GridCreator.TILES[:]
-        SPEC_ORDER.remove(GridCreator.TILE)
-        SPEC_ORDER.append(GridCreator.TILE)
-
-        # Move 0 to end because it is a special character
-
-        for tile in SPEC_ORDER:
-            if tile in string:
-
-                return tile
 
 
     def checkLim(self, node: Tuple[int, int]) -> bool:
@@ -123,17 +101,7 @@ class Search:
 
 
 
-    def gen_matplotlib_start_grid(self, display: bool = False):
-        # Should be called before any frames are generated for the text animation option
-        # Eg there should be no colour on the grid
-        mat_grid = [[] for _ in range(len(self._curGrid))]
-        for row in range(len(self._curGrid)):
-            for col in range(len(self._curGrid)):
 
-                    mat_grid[row].append(self._cell_to_col[self.extract_cell(self._curGrid[row][col])])
-
-        if display:
-            self.test_cmap(mat_grid)
 
 
 
@@ -172,42 +140,6 @@ class Search:
                 yield nx, ny
 
 
-    def test_rand_gen(self, size: int = -1):
-
-        if size == -1:
-            size = len(self.__col_list)
-
-        return [[random.randint(0, len(self.__col_list)) for _ in range(size)] for _ in range(size)]
-
-    def test_cmap(self, arr=None):
-
-        if arr is None:
-            arr = self.test_rand_gen(20)
-
-        plt.pcolormesh(arr, cmap=self.__cmap, edgecolors="k", linewidth=0.01)
-        plt.show()
-
-
-    def test_update_fig(self, a, size):
-
-        self.__im.set_array(self.test_rand_gen(size))
-
-        return [self.__im]
-
-
-    def test_2d_animation(self, size=10):
-
-        fig = plt.figure()
-        ax = plt.axes()
-
-        data = self.test_rand_gen(size)
-
-        self.__im = plt.imshow(data, cmap=self.__cmap, interpolation="nearest")
-
-
-        anim = matplotlib.animation.FuncAnimation(fig, self.test_update_fig, frames=10, interval=100, fargs = [size], blit=True)
-
-        plt.show()
 
 
 class BFS(Search):
