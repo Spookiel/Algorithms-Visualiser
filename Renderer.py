@@ -96,21 +96,19 @@ class SearchingRenderer(Renderer):
 
         plt.show()
     
-    def gen_matplotlib_start_grid(self, display: bool = False):
+    def gen_matplotlib_grid(self, grid, display: bool = False):
         # Should be called before any frames are generated for the text animation option
         # Eg there should be no colour on the grid
-        mat_grid = [[] for _ in range(len(self.cur_grid))]
-        for row in range(len(self.cur_grid)):
-            for col in range(len(self.cur_grid)):
-
-                    mat_grid[row].append(self._cell_to_col[self.extract_cell(self.cur_grid[row][col])])
+        mat_grid = [[] for _ in range(len(grid))]
+        for row in range(len(grid)):
+            for col in range(len(grid)):
+                mat_grid[row].append(self._cell_to_col[self.extract_cell(grid[row][col])])
 
         if display:
             self.test_cmap(mat_grid)
 
 
     def extract_cell(self, string):
-
         SPEC_ORDER = GridCreator.TILES[:]
         SPEC_ORDER.remove(GridCreator.TILE)
         SPEC_ORDER.append(GridCreator.TILE)
@@ -127,4 +125,4 @@ class SearchingRenderer(Renderer):
 if __name__ == "__main__":
     tr = SearchingRenderer()
 
-    tr.test_2d_animation(size=5)
+    tr.test_2d_animation(size=20)

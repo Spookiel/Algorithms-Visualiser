@@ -15,7 +15,7 @@ class Sort(ABC):
     SMALL_SORT = 8
     MED_SORT = 25
     LARGE_SORT = 50
-    EXTREME_SORT = 150
+    EXTREME_SORT = 300
     SORT_SIZES = [SMALL_SORT, MED_SORT, LARGE_SORT, EXTREME_SORT]
     NUM_SIZES = 5
 
@@ -24,7 +24,7 @@ class Sort(ABC):
     FAST_ANIM = 0.05
     INSTA_ANIM = 0
     ANIM_SPEEDS = [SLOW_ANIM, MED_ANIM, FAST_ANIM, INSTA_ANIM]
-    MATPLOT_INTERVALS = [2000, 250, 30, 10]
+    MATPLOT_INTERVALS = [2000, 250, 30, 1]
 
     HIGH_FREQ_BARS = 7
 
@@ -32,10 +32,15 @@ class Sort(ABC):
         self._steps: List[Tuple[str, List[int]]] = []
         self._totalComparisons = 0
         self._frames: List[List[int]] = []
+        self._fast_frames: List[Tuple[int, int]] = []
         self._frameHighlights: List[List[Tuple[int, int]]] = [] # Stores bar index, colour of specific bars to highlight for each frame
         self.col_look = None # Stores the colour map lookup which is initialised for each new animation
         self.__timer_text = None # Initialised within show_animation()
         self.__iterations_text = None # Initialised within show_animation()
+
+
+
+
 
 
     @abstractmethod
@@ -66,6 +71,26 @@ class Sort(ABC):
         # Add code to change the colour of all bars which need to be highlighted
 
 
+    def update_fig_fast(self, arr, bars, comp):
+
+
+        for ind, val in arr:
+            bars[ind].set_height(val)
+
+            if val != 0:
+                # print(val, self.val_ind_look[val])
+                bars[ind].set_color(self.col_look[self.val_ind_look[val]])
+                # bar.set_color(self.col_look[val-1])
+
+        self.its += 1
+        self.__iterations_text.set_text("# of operations: {}".format(self.its))
+        self.__timer_text.set_text(f"Time elapsed: {round(time.time()-self._anim_start,3)}")
+        # Add code to increment #iterations and draw them
+        # Add code to change the colour of all bars which need to be highlighted
+
+
+
+
     @staticmethod
     def rescale(arr: List[int]):
         """
@@ -76,7 +101,7 @@ class Sort(ABC):
         """
         return 1-((arr - np.min(arr)) / (np.max(arr) - np.min(arr)))
 
-    def show_animation(self, save=False) -> None:
+    def show_animation(self, save=False, fast_anim = False) -> None:
         """
         Generates a matplotlib animation for the given set of frames
 
@@ -84,19 +109,30 @@ class Sort(ABC):
         :return None:
         """
         cmap = plt.get_cmap("winter")
-        assert len(self.frames) > 0
+
+        if not fast_anim:
+            loc_frames = self.frames
+        else:
+            loc_frames = self._fast_frames
+
+        assert len(loc_frames) > 0
 
         fig, ax = plt.subplots()
 
         plt.yticks([])
         plt.xticks([])
         self.its = 0
-        frames_gen = (f for ind,f in enumerate(self.frames) if ind%1==0)
+        frames_gen = (f for ind,f in enumerate(loc_frames) if ind%1==0)
 
-        arr = next(frames_gen)
-
-
+        if fast_anim:
+            arr = self.frames[0]
+        else:
+            arr = next(frames_gen)
         bars = ax.bar(range(len(arr)), arr, align="edge", color=self.col_look, alpha=0.88, width=1.0)
+
+
+
+
 
         self.col_look = cmap(Sort.rescale(sorted(arr)))
         self.val_ind_look = {}
@@ -104,6 +140,11 @@ class Sort(ABC):
         so = sorted(arr)
         for ind, val in enumerate(so):
             self.val_ind_look[val] = ind
+
+
+        for bar, val in zip(bars, arr):
+            if val != 0:
+                bar.set_color(self.col_look[self.val_ind_look[val]])
 
 
         ax.set_xlim(0, len(arr))
@@ -114,19 +155,21 @@ class Sort(ABC):
         # Calculate interval based on number of frames
 
         interval: int = 10   # Delay between frames in ms
-        if len(self.frames) < 20:
+        if len(loc_frames) < 20:
             interval = Sort.MATPLOT_INTERVALS[0]
-        elif len(self.frames) < 50:
+        elif len(loc_frames) < 50:
             interval = Sort.MATPLOT_INTERVALS[1]
-        elif len(self.frames) < 200:
+        elif len(loc_frames) < 200:
             interval = Sort.MATPLOT_INTERVALS[2]
-        elif len(self.frames) > 200:
+        elif len(loc_frames) > 200:
             interval = Sort.MATPLOT_INTERVALS[3]
 
         self._anim_start = time.time()
 
-        anim = animation.FuncAnimation(fig, func=self.update_fig, fargs=(bars, 0), frames=frames_gen,
-                                       interval=interval, repeat=False, save_count=len(self.frames))
+        update_func = self.update_fig if not fast_anim else self.update_fig_fast
+
+        anim = animation.FuncAnimation(fig, func=update_func, fargs=(bars, 0), frames=frames_gen,
+                                       interval=interval, repeat=False, save_count=len(loc_frames))
 
         if save:
             fpath = os.path.join(os.getcwd(), "animations", "test.gif")
@@ -297,8 +340,10 @@ class QuickSort(Sort):
         if upto == -1:
             upto = Sort.SORT_SIZES[size]
         to_sort = Sort.generate(Sort.SORT_SIZES[size], upto, gen_type)
-        self._frames = []
-        print(to_sort, size, gen_type, upto)
+        #print(to_sort)
+        self._frames = [to_sort[:]]
+        self._fast_frames = []
+        #print(to_sort, size, gen_type, upto)
         self.sort_array(to_sort)
 
 
@@ -332,12 +377,16 @@ class QuickSort(Sort):
 
         for j in range(ind, hi):
             if arr[j] < piv:
+                self._fast_frames.append([(int(ind), int(arr[j])), (int(j), int(arr[ind]))])
                 arr[ind], arr[j] = arr[j], arr[ind]
+                #self._fast_frames.append([(int(ind), int(arr[j])), (int(j), int(arr[ind]))])
                 ind += 1
-                self._frames.append(arr[:])
 
+                self._frames.append(arr.copy())
+        self._fast_frames.append([(int(ind), int(arr[hi])), (int(hi), int(arr[ind]))])
         arr[ind], arr[hi] = arr[hi], arr[ind]
-        self._frames.append(arr[:])
+        #self._fast_frames.append([(int(ind), int(arr[hi])), (int(hi), int(arr[ind]))])
+        self._frames.append(arr.copy())
         return ind
 
 
@@ -408,4 +457,9 @@ class RadixSort(Sort):
 
 
 if __name__ == "__main__":
-    pass
+
+
+    q = QuickSort()
+    q.process_sort(size=3)
+    #q.show_animation(fast_anim=True)
+    #q.show_animation(fast_anim=False)
