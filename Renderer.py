@@ -5,6 +5,8 @@ from abc import ABC
 from Creator import GridCreator
 import numpy as np
 from Searches import BFS
+from termcolor import colored
+import re
 
 class Renderer(ABC):
     def __init__(self) -> None:
@@ -18,6 +20,8 @@ class SortingRenderer(Renderer):
 
 
 class SearchingRenderer(Renderer):
+    GREY = '0.5'
+    WHITE = '1'
     def __init__(self):
         super().__init__()
         
@@ -27,12 +31,12 @@ class SearchingRenderer(Renderer):
         # Searched are green
         # End points are blue
         # Obstacles are red
-        GREY = '0.5'
-        WHITE = '1'
-        self.__col_list = [WHITE, GREY, "b", "g","r"]
+
+        self.__col_list = [SearchingRenderer.WHITE, SearchingRenderer.GREY, "b", "g","r"]
         self.__frames = []
         self.__cur_grid = None
         self.__cmap = matplotlib.colors.ListedColormap(self.__col_list)
+        self.__ansi_to_col = {31: 4, 32:3, 34:2, 37: 0, 30:1}
     
     
     @property
@@ -75,9 +79,11 @@ class SearchingRenderer(Renderer):
         plt.show()
 
 
-    def test_update_fig(self, a, size):
+    def test_update_fig(self, frame):
 
-        self.__im.set_array(self.test_rand_gen(size).flatten())
+        np_frame = np.array(frame)
+
+        self.__im.set_array(np_frame.flatten())
 
         return [self.__im]
 
@@ -86,13 +92,16 @@ class SearchingRenderer(Renderer):
 
         fig = plt.figure()
         ax = plt.axes()
-
-        data = self.test_rand_gen(size)
-
-        self.__im = plt.pcolormesh(data, cmap=self.__cmap, edgecolors="k", linewidth=0.01)
+        frame_gen = (self.gen_matplotlib_grid(scene) for ind,scene in enumerate(self.frames) if ind%1==0)
+        data = next(frame_gen)
 
 
-        anim = matplotlib.animation.FuncAnimation(fig, self.test_update_fig, frames=10, interval=100, fargs = [size])
+        plt.yticks([])
+        plt.xticks([])
+        self.__im = plt.pcolormesh(data, cmap=self.__cmap, edgecolors="k", linewidth=0.000001)
+
+
+        anim = matplotlib.animation.FuncAnimation(fig, func=self.test_update_fig, frames=frame_gen, interval=200, repeat=False)
 
         plt.show()
     
@@ -102,10 +111,12 @@ class SearchingRenderer(Renderer):
         mat_grid = [[] for _ in range(len(grid))]
         for row in range(len(grid)):
             for col in range(len(grid)):
-                mat_grid[row].append(self._cell_to_col[self.extract_cell(grid[row][col])])
+                mat_grid[row].append(self.__ansi_to_col[self.extract_col(grid[row][col])])
 
         if display:
             self.test_cmap(mat_grid)
+
+        return mat_grid
 
 
     def extract_cell(self, string):
@@ -120,9 +131,22 @@ class SearchingRenderer(Renderer):
 
                 return tile
 
+    def extract_col(self, string):
+        pat = r"\[([0-9]{2})" # To get the color of the string
 
+        got = re.findall(pat, string)
+        if len(got) == 0:
+            # Return the white colour
+            return 37
+        return int(got[0])
 
 if __name__ == "__main__":
     tr = SearchingRenderer()
+    tb = BFS()
+    tc = GridCreator()
+    grid = tc.generate_grid(2)
+    tb.process_search(grid, display_text_steps=False)
+    tr.frames = tb._frames
+    #tr.gen_matplotlib_grid(tb._frames[len(tb._frames)-1], display=True)
 
-    tr.test_2d_animation(size=20)
+    tr.test_2d_animation()

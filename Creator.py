@@ -27,7 +27,7 @@ class GridCreator():
     SMALL_SIZE = 8
     START_COL = END_COL = "grey"
     MED_SIZE = 15
-    LARGE_SIZE = 30
+    LARGE_SIZE = 60
     SIZES = [SMALL_SIZE, MED_SIZE, LARGE_SIZE]
     TILE = "0"
     STILE = "S"

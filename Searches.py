@@ -8,6 +8,7 @@ from matplotlib import colors
 import matplotlib.animation
 import random
 import heapq as hp
+from copy import deepcopy # To copy the 2D arrays with no problems
 
 class Search:
 
@@ -175,7 +176,7 @@ class BFS(Search):
             self.outputSearchInfo()
 
 
-    def __process_path(self) -> None:
+    def process_path(self) -> None:
         self._tracePath()
         self._storePath()
         self._outputPath()
@@ -196,13 +197,13 @@ class BFS(Search):
 
 
     def updateIfDistChange(self, dist: int, last_dist: int) -> int:
-        if last_dist != dist:
-            cop_grid = []
-            for row in self._curGrid:
-                cop_grid.append(row[:])
-            self._steps.append(cop_grid)
 
-            return int(dist) # Careful of copying errors
+        if last_dist != dist:
+            self._steps.append(deepcopy(self._curGrid))
+            self._frames.append(deepcopy(self._curGrid))
+
+
+        return int(dist) # Careful of copying errors
 
     def bfs(self):
         # Generates a sequence of colored grids,
@@ -215,6 +216,9 @@ class BFS(Search):
         self.start: Tuple[int, int] = self._curGrid # Goes through setter function
         self.end: Tuple[int, int] = self._curGrid # Goes through setter function
 
+
+
+        self._frames.append(deepcopy(self._curGrid))
         #tb.gen_matplotlib_start_grid(display=False)
 
         self._pathSteps = []
@@ -224,20 +228,25 @@ class BFS(Search):
 
 
         while queue:
+
             next_node, dist = queue.pop(0)
 
             val_at = self.getVal(next_node)
 
             # Record grid state and update last dist
+            #print(next_node, dist, queue, last_dist)
             last_dist = self.updateIfDistChange(dist, last_dist)
+
 
             # Colour green because have been searched
             self._colourMainTiles(next_node, val_at)
 
             if GridCreator.ETILE in val_at:
+
                 # Reached end so stop
                 self.__finalDist = dist
                 break
+
 
 
             adj_node: Tuple[int, int]
@@ -256,6 +265,8 @@ class BFS(Search):
                         self._curGrid[adj_node[1]][adj_node[0]] = colored(GridCreator.TILE, "blue")
 
                     queue.append((adj_node, dist+1))
+
+
 
         self.__checked = len(seen)
 
@@ -324,7 +335,7 @@ class AStar(Search):
                 print(*row)
             print("-"*40)
 
-    def __process_path(self) -> None:
+    def process_path(self) -> None:
         self._tracePath()
         self._storePath()
         self._outputPath()
@@ -335,9 +346,9 @@ class AStar(Search):
 if __name__=="__main__":
     tc = GridCreator()
 
-    grid = tc.generate_grid(2)
+    grid = tc.generate_grid(1)
     tb = BFS()
 
     tb.process_search(grid, False)
     tb.outputSteps()
-
+    tb.process_path()
