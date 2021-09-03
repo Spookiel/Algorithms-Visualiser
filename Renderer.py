@@ -22,6 +22,9 @@ class SortingRenderer(Renderer):
 class SearchingRenderer(Renderer):
     GREY = '0.5'
     WHITE = '1'
+    BLUE = (63/256,163/256,235/256,92/100)
+    GREEN = (137/256,235/256,101/256,92/100)
+    RED = (235/256, 82/256,78/256, 92/100)
     def __init__(self):
         super().__init__()
         
@@ -32,7 +35,7 @@ class SearchingRenderer(Renderer):
         # End points are blue
         # Obstacles are red
 
-        self.__col_list = [SearchingRenderer.WHITE, SearchingRenderer.GREY, "b", "g","r"]
+        self.__col_list = [SearchingRenderer.WHITE, SearchingRenderer.GREY, SearchingRenderer.BLUE, SearchingRenderer.GREEN, SearchingRenderer.RED]
         self.__frames = []
         self.__cur_grid = None
         self.__cmap = matplotlib.colors.ListedColormap(self.__col_list)
@@ -87,7 +90,7 @@ class SearchingRenderer(Renderer):
         plt.show()
 
 
-    def test_update_fig(self, frame):
+    def update_fig(self, frame):
 
         np_frame = np.array(frame)
 
@@ -96,7 +99,7 @@ class SearchingRenderer(Renderer):
         return [self.__im]
 
 
-    def test_2d_animation(self, size=10):
+    def run_2d_animation(self):
 
         fig = plt.figure()
         ax = plt.axes()
@@ -108,8 +111,7 @@ class SearchingRenderer(Renderer):
         plt.xticks([])
         self.__im = plt.pcolormesh(data, cmap=self.__cmap, edgecolors="k", linewidth=0.000001)
 
-
-        anim = matplotlib.animation.FuncAnimation(fig, func=self.test_update_fig, frames=frame_gen, interval=200, repeat=False)
+        anim = matplotlib.animation.FuncAnimation(fig, func=self.update_fig, frames=frame_gen, interval=100, repeat=False)
 
         plt.show()
     
@@ -159,4 +161,4 @@ if __name__ == "__main__":
     #tr.view_frames()
     #tr.gen_matplotlib_grid(tb._frames[len(tb._frames)-1], display=True)
 
-    tr.test_2d_animation()
+    tr.run_2d_animation()
