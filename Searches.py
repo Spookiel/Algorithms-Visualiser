@@ -34,6 +34,16 @@ class Search:
         return self.__end
 
 
+    @property
+    def all_frames(self):
+        if len(self._frames) == 0:
+            print(colored("Warning, no frames to draw", "red"))
+            raise Exception("Not enough frames to animate")
+        if len(self._pathSteps) == 0:
+            print(colored("Warning, no path steps to draw", "red"))
+            raise Exception("Not enough frames to animate")
+        return self._frames + self._pathSteps
+
     @start.setter
     def start(self, grid) -> Tuple[int, int]:
         # "s" in colored("s", "blue") -> True
@@ -171,15 +181,16 @@ class BFS(Search):
 
         if display_text_steps:
             self.outputSteps()
-            self.__process_path()
+        self.process_path(display_text_steps)
 
-            self.outputSearchInfo()
+        self.outputSearchInfo()
 
 
-    def process_path(self) -> None:
+    def process_path(self, display_text_steps: bool = True) -> None:
         self._tracePath()
         self._storePath()
-        self._outputPath()
+        if display_text_steps:
+            self._outputPath()
 
 
 
@@ -217,9 +228,7 @@ class BFS(Search):
         self.end: Tuple[int, int] = self._curGrid # Goes through setter function
 
 
-
         self._frames.append(deepcopy(self._curGrid))
-        #tb.gen_matplotlib_start_grid(display=False)
 
         self._pathSteps = []
         queue = [(self.start, 0)]  # (Node, distance)
@@ -234,7 +243,7 @@ class BFS(Search):
             val_at = self.getVal(next_node)
 
             # Record grid state and update last dist
-            #print(next_node, dist, queue, last_dist)
+
             last_dist = self.updateIfDistChange(dist, last_dist)
 
 

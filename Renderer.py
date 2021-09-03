@@ -38,7 +38,7 @@ class SearchingRenderer(Renderer):
         self.__cmap = matplotlib.colors.ListedColormap(self.__col_list)
         self.__ansi_to_col = {31: 4, 32:3, 34:2, 37: 0, 30:1}
     
-    
+
     @property
     def cur_grid(self):
         if self.__cur_grid is None:
@@ -61,6 +61,14 @@ class SearchingRenderer(Renderer):
     @frames.setter
     def frames(self, value):
         self.__frames = value
+
+
+    def view_frames(self):
+        for ind, frame in enumerate(self.__frames):
+            print("-"*10, f"Frame {ind+1}", "-"*10)
+            for m in frame:
+                print(*m)
+
 
 
     def test_rand_gen(self, size: int = -1):
@@ -137,7 +145,7 @@ class SearchingRenderer(Renderer):
         got = re.findall(pat, string)
         if len(got) == 0:
             # Return the white colour
-            return 37
+            return 37 # Ansi code for white
         return int(got[0])
 
 if __name__ == "__main__":
@@ -146,7 +154,9 @@ if __name__ == "__main__":
     tc = GridCreator()
     grid = tc.generate_grid(2)
     tb.process_search(grid, display_text_steps=False)
-    tr.frames = tb._frames
+    tr.frames = tb.all_frames
+
+    #tr.view_frames()
     #tr.gen_matplotlib_grid(tb._frames[len(tb._frames)-1], display=True)
 
     tr.test_2d_animation()
