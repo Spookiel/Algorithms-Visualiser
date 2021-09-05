@@ -9,6 +9,8 @@ import matplotlib.animation
 import random
 import heapq as hp
 from copy import deepcopy # To copy the 2D arrays with no problems
+from abc import abstractmethod
+
 
 class Search:
 
@@ -120,15 +122,34 @@ class Search:
             for row in step:
                 print(*row)
 
+    def process_path(self, display_text_steps: bool = True) -> None:
+        self._tracePath()
+        self._storePath()
+        if display_text_steps:
+            self._outputPath()
+
+
+    def process_search(self, grid: List[List], display_text_steps: bool = True) -> None:
+        self._curGrid = grid
+        self._pathSteps = []
+        self._steps = []
+
+        self.search()
+
+
+        if display_text_steps:
+            self.outputSteps()
+        self.process_path(display_text_steps)
+
+        self.outputSearchInfo()
 
 
 
 
 
-
-
-
-
+    @abstractmethod
+    def outputSearchInfo(self):
+        raise NotImplementedError()
 
 
     def show_animation(self):
@@ -160,6 +181,9 @@ class Search:
             if self.checkLim((nx, ny)):
                 yield nx, ny
 
+    @staticmethod
+    def manhattan(p1, p2):
+        return abs(p1[0]-p2[0])+abs(p1[1]-p2[1])
 
 
 
@@ -167,31 +191,6 @@ class BFS(Search):
 
     def __init__(self):
         super().__init__()
-
-
-
-
-    def process_search(self, grid: List[List], display_text_steps: bool = True) -> None:
-        self._curGrid = grid
-        self._pathSteps = []
-        self._steps = []
-
-        self.bfs()
-
-
-        if display_text_steps:
-            self.outputSteps()
-        self.process_path(display_text_steps)
-
-        self.outputSearchInfo()
-
-
-    def process_path(self, display_text_steps: bool = True) -> None:
-        self._tracePath()
-        self._storePath()
-        if display_text_steps:
-            self._outputPath()
-
 
 
     def outputSearchInfo(self):
@@ -216,7 +215,7 @@ class BFS(Search):
 
         return int(dist) # Careful of copying errors
 
-    def bfs(self):
+    def search(self):
         # Generates a sequence of colored grids,
         # yellow is for items currently in the queue, green is for items that have already been seen
         # Function works with manhattan distance
@@ -293,47 +292,39 @@ class AStar(Search):
         self._steps = []
         self.__finalDist = 0
         self.__checked = 0
-        self.__end = None
-        self.__start = None
-
-
-    @property
-    def end(self):
-        return self.__end
-
-    @property
-    def start(self):
-        return self.__start
 
 
 
-    def process_search(self, grid):
-        self._curGrid = grid
-        self._pathSteps = []
-        self._steps = []
 
-        self.astar()
-        self.outputSteps()
-        self.__process_path()
-
-        print("-"*5, "Search information", "-"*5)
-        print(f"Distance: {self.__finalDist}")
-        print(f"Tiles checked: {self.__checked}")
-        print(f"Board size: {len(self._curGrid)}x{len(self._curGrid)}")
+    def search(self) -> None:
 
 
-    def astar(self) -> None:
+        self.end = self._curGrid # Goes through setter function
+        self.start = self._curGrid # Goes through setter function
 
 
         queue = []
-        hp.heapify([])
+        hp.heapify(queue)
+
+        self.parents: dict = {}  # Stores parent node for each node so a path to start can be re-traced
+        seen: set = set()
+        last_dist: int = 0
+
+
+        self._frames.append(deepcopy(self._curGrid))
+
+        queue.append((self.heuristic(self.start), self.start, 0))
+
+        while queue:
 
 
 
 
 
     def heuristic(self, point):
-        pass
+
+        return Search.manhattan(point, self.end)
+
 
 
     def outputSteps(self):
@@ -344,11 +335,9 @@ class AStar(Search):
                 print(*row)
             print("-"*40)
 
-    def process_path(self) -> None:
-        self._tracePath()
-        self._storePath()
-        self._outputPath()
 
+    def outputSearchInfo(self):
+        raise NotImplementedError
 
 
 
@@ -358,6 +347,6 @@ if __name__=="__main__":
     grid = tc.generate_grid(1)
     tb = BFS()
 
-    tb.process_search(grid, False)
+    tb.process_search(grid, True)
     tb.outputSteps()
     tb.process_path()
