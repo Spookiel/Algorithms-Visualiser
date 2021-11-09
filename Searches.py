@@ -295,6 +295,10 @@ class AStar(Search):
 
 
 
+    def _colourMainTiles(self, next_node: Tuple[int, int], val_at: str):
+        if GridCreator.STILE not in val_at and GridCreator.ETILE not in val_at:
+            # Not a start or end point so should colour green
+            self._curGrid[next_node[1]][next_node[0]] = colored(GridCreator.TILE, "green")
 
     def search(self) -> None:
 
@@ -308,7 +312,6 @@ class AStar(Search):
 
         self.parents: dict = {}  # Stores parent node for each node so a path to start can be re-traced
         seen: set = set()
-        last_dist: int = 0
 
 
         self._frames.append(deepcopy(self._curGrid))
@@ -316,6 +319,42 @@ class AStar(Search):
         queue.append((self.heuristic(self.start), self.start, 0))
 
         while queue:
+            _, next_node, dist = hp.heappop(queue)
+            val_at = self.getVal(next_node)
+
+            # Record grid state and update last dist
+
+            self._frames.append(deepcopy(self._curGrid))
+            self._steps.append(deepcopy(self._curGrid))
+
+
+            # Colour green because have been searched
+            self._colourMainTiles(next_node, val_at)
+
+            if GridCreator.ETILE in val_at:
+
+                # Reached end so stop
+                self.__finalDist = dist
+                break
+
+
+
+            adj_node: Tuple[int, int]
+            for adj_node in self.adj4_gen(next_node[0], next_node[1]):
+
+                # Limits checked inside generator function above
+
+                if adj_node not in seen and GridCreator.BARRIER_TILE not in self.getVal(adj_node):
+                    # New node is inside grid, and is not a barrier
+                    seen.add(adj_node)
+                    self.parents[adj_node] = next_node
+
+
+                    # Colour this node yellow on the grid
+                    if GridCreator.ETILE not in self.getVal(adj_node):
+                        self._curGrid[adj_node[1]][adj_node[0]] = colored(GridCreator.TILE, "blue")
+
+                    hp.heappush(queue, (self.heuristic(adj_node), adj_node, dist+1))
 
 
 
@@ -337,7 +376,8 @@ class AStar(Search):
 
 
     def outputSearchInfo(self):
-        raise NotImplementedError
+        pass
+        #raise NotImplementedError
 
 
 
@@ -345,7 +385,7 @@ if __name__=="__main__":
     tc = GridCreator()
 
     grid = tc.generate_grid(1)
-    tb = BFS()
+    tb = AStar()
 
     tb.process_search(grid, True)
     tb.outputSteps()

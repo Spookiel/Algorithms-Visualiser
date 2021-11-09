@@ -9,13 +9,15 @@ import numpy as np
 from math import log10
 import  os
 import sys
+import utils
 sys.setrecursionlimit(10000)
+plt.rcParams['animation.ffmpeg_path'] = "C:/Users/lukem/FFmpeg/bin"
 
 class Sort(ABC):
     SMALL_SORT = 8
     MED_SORT = 25
     LARGE_SORT = 50
-    EXTREME_SORT = 300
+    EXTREME_SORT = 150
     SORT_SIZES = [SMALL_SORT, MED_SORT, LARGE_SORT, EXTREME_SORT]
     NUM_SIZES = 5
 
@@ -168,17 +170,16 @@ class Sort(ABC):
 
         update_func = self.update_fig if not fast_anim else self.update_fig_fast
 
-        anim = animation.FuncAnimation(fig, func=update_func, fargs=(bars, 0), frames=frames_gen,
-                                       interval=interval, repeat=False, save_count=len(loc_frames))
+        anim = animation.FuncAnimation(fig, func=update_func, fargs=(bars, 0), frames = frames_gen,
+                                   interval=interval, repeat=False, save_count=len(loc_frames))
 
         if save:
-            fpath = os.path.join(os.getcwd(), "animations", "test.gif")
-            print(f"Saving to file location {fpath}")
-            gifwriter = animation.PillowWriter(fps=60)
+            utils.save_anim(anim, 0)
 
-            anim.save(fpath, writer=gifwriter)
         plt.tight_layout()
         plt.show()
+
+
 
     @staticmethod
     def generate_uni_array(size: int, upto: int) -> List[int]:
@@ -458,8 +459,8 @@ class RadixSort(Sort):
 
 if __name__ == "__main__":
 
-
+    #print(animation.writers.list())
     q = QuickSort()
     q.process_sort(size=3)
-    #q.show_animation(fast_anim=True)
+    q.show_animation(fast_anim=True)
     #q.show_animation(fast_anim=False)

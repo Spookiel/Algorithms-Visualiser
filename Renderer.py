@@ -4,7 +4,7 @@ import random
 from abc import ABC
 from Creator import GridCreator
 import numpy as np
-from Searches import BFS
+from Searches import BFS, AStar
 from termcolor import colored
 import re
 
@@ -157,7 +157,6 @@ if __name__ == "__main__":
     grid = tc.generate_grid(2)
     tb.process_search(grid, display_text_steps=False)
     tr.frames = tb.all_frames
-
     #tr.view_frames()
     #tr.gen_matplotlib_grid(tb._frames[len(tb._frames)-1], display=True)
 

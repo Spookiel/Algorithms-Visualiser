@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from Simulator import Simulator
 from Renderer import Renderer
 from Sorter import Sorter
-
+import tkinter as tk
 import random
 
 import os
@@ -32,8 +32,54 @@ class GUI(UI):
         super().__init__()
         self._renderer: Renderer = Renderer()
 
+    def run_menu2(self):
+
+        menu2 = tk.Frame(self.root)
+
+        tbutton = tk.Button(menu2, text="Change2", command=self.change_page)
+
+
+
+        tbutton.pack(side=tk.TOP)
+
+        menu2.pack()
+
+
+    def run_menu1(self):
+        frame = tk.Frame(self.root)
+
+        startButton = tk.Button(frame, text="Change", command=self.change_page)
+        quitButton = tk.Button(frame, text="QUIT", command=quit)
+
+
+
+        startButton.pack(side=tk.TOP)
+        quitButton.pack(side=tk.BOTTOM)
+        frame.pack()
+
+    def change_page(self):
+        for widget in self.root.winfo_children():
+            widget.destroy()
+
+        if self.pagenum==0:
+            self.run_menu1()
+            self.pagenum = 1
+        elif self.pagenum==1:
+            self.run_menu2()
+            self.pagenum = 0
+
+
+
     def run(self) -> None:
-        raise NotImplementedError
+
+        self.pagenum = 0
+        self.root = tk.Tk()
+        self.root.geometry("500x200")
+
+        self.run_menu1()
+
+
+        self.root.mainloop()
 
     @property
     def renderer(self):
@@ -86,4 +132,6 @@ class Terminal(UI):
         print("-"*40)
 
 if __name__ == "__main__":
-    pass
+
+    g = GUI()
+    g.run()

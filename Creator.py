@@ -24,9 +24,9 @@ class GraphCreator():
 class GridCreator():
     GRID_GEN_ARGS = ["sml"]
     GRID_SOLVE_ARGS = []
-    SMALL_SIZE = 8
+    SMALL_SIZE = 15
     START_COL = END_COL = "grey"
-    MED_SIZE = 15
+    MED_SIZE = 30
     LARGE_SIZE = 60
     SIZES = [SMALL_SIZE, MED_SIZE, LARGE_SIZE]
     TILE = "0"
